@@ -91,6 +91,8 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * the given {@link InternalWindowFunction} is invoked to produce the results that are emitted for
  * the pane to which the {@code Trigger} belongs.
  *
+ * TODO AbstractUdfStreamOperator <- AbstractStreamOperator: AbstractStreamOperator.processWatermark会触发这里注册的
+ *   eventTime窗口的onEventTime
  * @param <K> The type of key returned by the {@code KeySelector}.
  * @param <IN> The type of the incoming elements.
  * @param <OUT> The type of elements emitted by the {@code InternalWindowFunction}.
@@ -384,6 +386,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 		} else {
 			for (W window: elementWindows) {
 
+				// TODO 如果元素迟到了则忽略
 				// drop if the window is already late
 				if (isWindowLate(window)) {
 					continue;
@@ -393,22 +396,28 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 				windowState.setCurrentNamespace(window);
 				windowState.add(element.getValue());
 
+				// TODO 指定当前要计算的key和window
 				triggerContext.key = key;
 				triggerContext.window = window;
 
+				// TODO 判定当前元素是否达到window触发条件
 				TriggerResult triggerResult = triggerContext.onElement(element);
 
 				if (triggerResult.isFire()) {
+					// TODO 触发时获取窗口中缓存的数据数据，没有数据就跳过
 					ACC contents = windowState.get();
 					if (contents == null) {
 						continue;
 					}
+					// TODO 调用用户自定义函数进行计算
 					emitWindowContents(window, contents);
 				}
 
 				if (triggerResult.isPurge()) {
+					// TODO 清理窗口缓存的数据
 					windowState.clear();
 				}
+				// TODO 注册窗口清理Timer(最终通过触发WindowOperator.onEventTime来触发)
 				registerCleanupTimer(window);
 			}
 		}
@@ -449,6 +458,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			mergingWindows = null;
 		}
 
+		// TODO 最终调用Trigger.onEventTime
 		TriggerResult triggerResult = triggerContext.onEventTime(timer.getTimestamp());
 
 		if (triggerResult.isFire()) {
@@ -462,6 +472,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			windowState.clear();
 		}
 
+		// TODO 销毁窗口
 		if (windowAssigner.isEventTime() && isCleanupTime(triggerContext.window, timer.getTimestamp())) {
 			clearAllState(triggerContext.window, windowState, mergingWindows);
 		}
@@ -508,6 +519,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			windowState.clear();
 		}
 
+		// TODO 销毁窗口
 		if (!windowAssigner.isEventTime() && isCleanupTime(triggerContext.window, timer.getTimestamp())) {
 			clearAllState(triggerContext.window, windowState, mergingWindows);
 		}
@@ -576,6 +588,8 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 	 * of the given window.
 	 */
 	protected boolean isWindowLate(W window) {
+		// TODO cleanupTime(window)计算对应window的最终清理时间: window.maxTimestamp() + allowedLateness
+		//   internalTimerService.currentWatermark():最大watermark
 		return (windowAssigner.isEventTime() && (cleanupTime(window) <= internalTimerService.currentWatermark()));
 	}
 
@@ -596,6 +610,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 	 * 					the window whose state to discard
 	 */
 	protected void registerCleanupTimer(W window) {
+		// TODO 计算窗口销毁触发时间
 		long cleanupTime = cleanupTime(window);
 		if (cleanupTime == Long.MAX_VALUE) {
 			// don't set a GC timer for "end of time"
@@ -603,6 +618,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 		}
 
 		if (windowAssigner.isEventTime()) {
+			// TODO 注册Timer
 			triggerContext.registerEventTimeTimer(cleanupTime);
 		} else {
 			triggerContext.registerProcessingTimeTimer(cleanupTime);

@@ -565,6 +565,7 @@ public abstract class AbstractStreamOperator<OUT>
 
 	public void processWatermark(Watermark mark) throws Exception {
 		if (timeServiceManager != null) {
+			// TODO 最终会触发onEventTime()
 			timeServiceManager.advanceWatermark(mark);
 		}
 		output.emitWatermark(mark);

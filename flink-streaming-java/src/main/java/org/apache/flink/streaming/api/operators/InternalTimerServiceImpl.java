@@ -176,6 +176,7 @@ public class InternalTimerServiceImpl<K, N> implements InternalTimerService<N> {
 			// re-register the restored timers (if any)
 			final InternalTimer<K, N> headTimer = processingTimeTimersQueue.peek();
 			if (headTimer != null) {
+				// TODO 触发onProcessingTime()
 				nextTimer = processingTimeService.registerTimer(headTimer.getTimestamp(), this::onProcessingTime);
 			}
 			this.isInitialized = true;
@@ -273,6 +274,7 @@ public class InternalTimerServiceImpl<K, N> implements InternalTimerService<N> {
 		while ((timer = eventTimeTimersQueue.peek()) != null && timer.getTimestamp() <= time) {
 			eventTimeTimersQueue.poll();
 			keyContext.setCurrentKey(timer.getKey());
+			// TODO 触发onEventTime()
 			triggerTarget.onEventTime(timer);
 		}
 	}
