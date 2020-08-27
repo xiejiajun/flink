@@ -403,6 +403,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 				// TODO 判定当前元素是否达到window触发条件
 				TriggerResult triggerResult = triggerContext.onElement(element);
 
+				// TODO TriggerResult.FIRE_AND_PURGE和TriggerResult.FIRE的isFire都为true
 				if (triggerResult.isFire()) {
 					// TODO 触发时获取窗口中缓存的数据数据，没有数据就跳过
 					ACC contents = windowState.get();
@@ -413,6 +414,10 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 					emitWindowContents(window, contents);
 				}
 
+				// TODO TriggerResult.FIRE_AND_PURGE和TriggerResult.PURGE的isPurge都为true
+				//  收到TriggerResult.FIRE_AND_PURGE后，窗口缓存数据被清空，下次返回FIRE时
+				//  windowState.get为null，故不再触发计算(注意：如果在Purge之后Fire之前有新数据分配到这个窗口
+				//  而且窗口还没被销毁，则还是可能重新触发计算的
 				if (triggerResult.isPurge()) {
 					// TODO 清理窗口缓存的数据
 					windowState.clear();
@@ -544,6 +549,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 		windowState.clear();
 		triggerContext.clear();
 		processContext.window = window;
+		// TODO 销毁窗口时调用用户定义的clear方法
 		processContext.clear();
 		if (mergingWindows != null) {
 			mergingWindows.retireWindow(window);
