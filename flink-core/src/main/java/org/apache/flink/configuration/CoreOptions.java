@@ -50,6 +50,8 @@ public class CoreOptions {
 	 * <p>The default settings indicate to load classes first from the user code jar,
 	 * which means that user code jars can include and load different dependencies than
 	 * Flink uses (transitively).
+	 * TODO child-first: 优先从自己传递的url中加载class
+	 *      parent-first: 优先从双亲加载器加载class
 	 *
 	 * <p>Exceptions to the rules are defined via {@link #ALWAYS_PARENT_FIRST_LOADER_PATTERNS}.
 	 */

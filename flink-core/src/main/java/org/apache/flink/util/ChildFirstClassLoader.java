@@ -50,6 +50,13 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 		this.alwaysParentFirstPatterns = alwaysParentFirstPatterns;
 	}
 
+	/**
+	 * 重写FlinkUserCodeClassLoader的loadClassWithoutExceptionHandling，优先加载
+	 * @param name
+	 * @param resolve
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
 	@Override
 	protected synchronized Class<?> loadClassWithoutExceptionHandling(
 			String name,
@@ -62,6 +69,7 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 			// check whether the class should go parent-first
 			for (String alwaysParentFirstPattern : alwaysParentFirstPatterns) {
 				if (name.startsWith(alwaysParentFirstPattern)) {
+					// TODO 需要从parent类加载器加载的就走FlinkUserCodeClassLoader的加载方法
 					return super.loadClassWithoutExceptionHandling(name, resolve);
 				}
 			}
@@ -82,6 +90,11 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 		return c;
 	}
 
+	/**
+	 * TODO 通过重写getResource打破双亲委托机制，优先从自己传入的url中加载class
+	 * @param name
+	 * @return
+	 */
 	@Override
 	public URL getResource(String name) {
 		// first, try and find it via the URLClassloader
@@ -95,6 +108,12 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 		return super.getResource(name);
 	}
 
+	/**
+	 * TODO 通过重写getResource打破双亲委托机制，优先从自己传入的url中加载class
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
 	@Override
 	public Enumeration<URL> getResources(String name) throws IOException {
 		// first get resources from URLClassloader

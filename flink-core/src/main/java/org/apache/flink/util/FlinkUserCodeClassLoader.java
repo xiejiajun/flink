@@ -58,6 +58,7 @@ public abstract class FlinkUserCodeClassLoader extends URLClassLoader {
 	 * <p>Extending concrete class loaders should implement this instead of {@link #loadClass(String, boolean)}.
 	 */
 	protected Class<?> loadClassWithoutExceptionHandling(String name, boolean resolve) throws ClassNotFoundException {
+		// TODO 类加载器默认就从父类加载对象
 		return super.loadClass(name, resolve);
 	}
 }
