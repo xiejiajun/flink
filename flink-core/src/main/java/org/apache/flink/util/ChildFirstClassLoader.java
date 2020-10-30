@@ -76,9 +76,11 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 
 			try {
 				// check the URLs
+				// TODO 优先从自己构建自定义ClassLoader时传入的URL中查找并加载class
 				c = findClass(name);
 			} catch (ClassNotFoundException e) {
 				// let URLClassLoader do it, which will eventually call the parent
+				// TODO 自己加载不了再走双亲委托机制
 				c = super.loadClassWithoutExceptionHandling(name, resolve);
 			}
 		}
@@ -91,7 +93,9 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 	}
 
 	/**
-	 * TODO 通过重写getResource打破双亲委托机制，优先从自己传入的url中加载class
+	 * TODO 通过重写getResource修改从ClassLoader中查找其他配置文件(如xml文件等)的查找顺序
+	 *    优先从自己的ucp中找，找不到再走双亲委托机制从父加载器开始找
+	 *    需要注意的是这个方法和class加载没多大关系，注意用来加载ClassLoader的ucp(URLClassPath)中的配置文件
 	 * @param name
 	 * @return
 	 */
@@ -109,7 +113,9 @@ public final class ChildFirstClassLoader extends FlinkUserCodeClassLoader {
 	}
 
 	/**
-	 * TODO 通过重写getResource打破双亲委托机制，优先从自己传入的url中加载class
+	 * TODO 通过重写getResource修改从ClassLoader中查找其他配置文件(如xml文件等)的查找顺序
+	 * 	 优先从自己的ucp中找，找不到再走双亲委托机制从父加载器开始找
+	 * 	 需要注意的是这个方法和class加载没多大关系，注意用来加载ClassLoader的ucp(URLClassPath)中的配置文件
 	 * @param name
 	 * @return
 	 * @throws IOException
