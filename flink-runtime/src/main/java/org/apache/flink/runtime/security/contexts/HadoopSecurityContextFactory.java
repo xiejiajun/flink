@@ -56,6 +56,7 @@ public class HadoopSecurityContextFactory implements SecurityContextFactory {
 	@Override
 	public SecurityContext createContext(SecurityConfiguration securityConfig) throws SecurityContextInitializeException {
 		try {
+			// TODO 安全模块install的时候已经配置了kerberos等认证信息，这里直接获取ugi
 			UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
 			return new HadoopSecurityContext(loginUser);
 		} catch (Exception e) {

@@ -23,6 +23,7 @@ import org.apache.flink.runtime.security.SecurityConfiguration;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
+ * TODO 包含某些进程范围内(使用System.setProperty传递信息的都是进程范围的)的ZK相关安全配置
  * Responsible for installing a process-wide ZooKeeper security configuration.
  */
 public class ZooKeeperModule implements SecurityModule {
@@ -59,6 +60,7 @@ public class ZooKeeperModule implements SecurityModule {
 	@Override
 	public void install() throws SecurityInstallException {
 
+		// TODO zk认证信息配置
 		priorSaslEnable = System.getProperty(ZK_ENABLE_CLIENT_SASL, null);
 		System.setProperty(ZK_ENABLE_CLIENT_SASL, String.valueOf(!securityConfig.isZkSaslDisable()));
 

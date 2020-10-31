@@ -31,6 +31,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO Flink安全认证架构描述: https://ci.apache.org/projects/flink/flink-docs-release-1.11/ops/security-kerberos.html
+ *    相关配置方式：https://ci.apache.org/projects/flink/flink-docs-release-1.11/ops/security-kerberos.html#deployment-modes
+ *    Yarn模式处理使用keytab配置 还可以使用kinit方式通过用户名密码登陆，这种方式又一个缺陷，就是要保证Flink应用运行时间小雨TGT失效时间
+ *
+ * TODO Each component that uses Kerberos is independently responsible for renewing the Kerberos ticket-granting-ticket (TGT).
+ *   Hadoop, ZooKeeper, and Kafka all renew the TGT automatically when provided a keytab. In the delegation token scenario,
+ *   YARN itself renews the token (up to its maximum lifespan).
+ *   使用Kerberos的每个组件都独立负责续订Kerberos票务授权票（TGT）。
+ *   Hadoop，Zookeeper和Kafka在使用keytab进行身份认证时会自动续订TGT。在使用delegation token进行认证时，是Yarn自己进行TGT更新（最高寿命
+ *   ），，但要注意TGT更新后跟授权token的生命周期是没关系的，所有授权token是会过期的。
  * Security Environment that holds the security context and modules installed.
  */
 public class SecurityUtils {
@@ -72,6 +82,7 @@ public class SecurityUtils {
 				LOG.error("Unable to instantiate security module factory {}", moduleFactoryClass);
 				throw new IllegalArgumentException("Unable to find module factory class", ne);
 			}
+			// TODO 使用工厂模式创建安全模块
 			SecurityModule module = moduleFactory.createModule(config);
 			// can be null if a SecurityModule is not supported in the current environment
 			if (module != null) {
@@ -89,6 +100,7 @@ public class SecurityUtils {
 				SecurityContextFactory contextFactory = SecurityFactoryServiceLoader.findContextFactory(contextFactoryClass);
 				if (contextFactory.isCompatibleWith(config)) {
 					try {
+						// TODO 创建安全上下文
 						installedContext = contextFactory.createContext(config);
 						// install the first context that's compatible and ignore the remaining.
 						break;

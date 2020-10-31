@@ -324,6 +324,7 @@ public class TaskManagerRunner implements FatalErrorHandler, AutoCloseableAsync 
 		final PluginManager pluginManager = PluginUtils.createPluginManagerFromRootFolder(configuration);
 		FileSystem.initialize(configuration, pluginManager);
 
+		// TODO 配置安全上下文(kerberos等认证信息)
 		SecurityUtils.install(new SecurityConfiguration(configuration));
 
 		SecurityUtils.getInstalledContext().runSecured(() -> {

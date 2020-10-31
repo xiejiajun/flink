@@ -199,7 +199,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 	private SecurityContext installSecurityContext(Configuration configuration) throws Exception {
 		LOG.info("Install security context.");
-
+		// TODO 安全配置（kerberos认证等信息)
 		SecurityUtils.install(new SecurityConfiguration(configuration));
 
 		return SecurityUtils.getInstalledContext();

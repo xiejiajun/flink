@@ -42,6 +42,8 @@ import java.util.Collection;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
+ * TODO 按官网提示的，该模块建立的是进程范围用户上下文，登陆的user在该进程内用于和所有Hadoop相关服务进行交换，
+ *   包括Yarn、HDFS、HBase
  * Responsible for installing a Hadoop login user.
  */
 public class HadoopModule implements SecurityModule {
@@ -53,6 +55,7 @@ public class HadoopModule implements SecurityModule {
 	private final Configuration hadoopConfiguration;
 
 	public HadoopModule(
+		// TODO SecurityConfiguration包含keytab principal等属性
 		SecurityConfiguration securityConfiguration,
 		Configuration hadoopConfiguration) {
 		this.securityConfig = checkNotNull(securityConfiguration);
@@ -76,6 +79,7 @@ public class HadoopModule implements SecurityModule {
 				!StringUtils.isBlank(securityConfig.getKeytab()) && !StringUtils.isBlank(securityConfig.getPrincipal())) {
 				String keytabPath = (new File(securityConfig.getKeytab())).getAbsolutePath();
 
+				// TODO 根据安全配置替换掉当前ugi
 				UserGroupInformation.loginUserFromKeytab(securityConfig.getPrincipal(), keytabPath);
 
 				loginUser = UserGroupInformation.getLoginUser();
@@ -113,6 +117,7 @@ public class HadoopModule implements SecurityModule {
 
 						Method addCredentialsMethod = UserGroupInformation.class.getMethod("addCredentials",
 							Credentials.class);
+						// TODO 为ugi添加认证凭据
 						addCredentialsMethod.invoke(loginUser, credentials);
 					} catch (NoSuchMethodException e) {
 						LOG.warn("Could not find method implementations in the shaded jar.", e);

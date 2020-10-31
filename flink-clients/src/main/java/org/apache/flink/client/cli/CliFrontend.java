@@ -987,6 +987,7 @@ public class CliFrontend {
 				configuration,
 				customCommandLines);
 
+			// TODO 配置安全认证并运行
 			SecurityUtils.install(new SecurityConfiguration(cli.configuration));
 			int retCode = SecurityUtils.getInstalledContext()
 					.runSecured(() -> cli.parseParameters(args));

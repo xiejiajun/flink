@@ -71,6 +71,7 @@ public class SecurityConfiguration {
 	}
 
 	/**
+	 * TODO 创建安全配置（包含Kerberos认证需要的信息)
 	 * Create a security configuration from the global configuration.
 	 * @param flinkConf the Flink global configuration.
 	 * @param securityModuleFactories the security modules to apply.

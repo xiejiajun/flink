@@ -746,6 +746,7 @@ public class FlinkYarnSessionCli extends AbstractCustomCommandLine {
 				"",
 				""); // no prefix for the YARN session
 
+			// TODO 配置安全认证上下文(kerberos等认证信息)
 			SecurityUtils.install(new SecurityConfiguration(flinkConfiguration));
 
 			retCode = SecurityUtils.getInstalledContext().runSecured(() -> cli.run(args));

@@ -116,6 +116,7 @@ public class HistoryServer {
 		FileSystem.initialize(flinkConfig, PluginUtils.createPluginManagerFromRootFolder(flinkConfig));
 
 		// run the history server
+		// TODO 先配置安全上下文（包括Kerberos认证信息等)
 		SecurityUtils.install(new SecurityConfiguration(flinkConfig));
 
 		try {

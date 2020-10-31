@@ -21,6 +21,7 @@ package org.apache.flink.runtime.security.modules;
 import java.security.GeneralSecurityException;
 
 /**
+ * TODO Flink安全认证架构描述: https://ci.apache.org/projects/flink/flink-docs-release-1.11/ops/security-kerberos.html
  * An installable security module.
  */
 public interface SecurityModule {

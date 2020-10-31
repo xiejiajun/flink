@@ -43,6 +43,8 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 import static org.apache.flink.util.Preconditions.checkState;
 
 /**
+ * TODO 按官网提示：该模块为集群提供的是一个动态的JAAS配置，可以为Kafka、ZK和其他依赖于JAAS的组件提供可用的Kerberos凭据
+ *  （注意，它并不能直接支持Yarn HDFS HBase等需要ugi人Kerberos凭据。Hbase比较特殊，它的第三方API asyncHbase是可以使用JAAS方式进行认证的)
  * Responsible for installing a process-wide JAAS configuration.
  *
  * <p>The installed configuration combines login modules based on:
@@ -106,6 +108,7 @@ public class JaasModule implements SecurityModule {
 		AppConfigurationEntry[] krb5Entries = getAppConfigurationEntries(securityConfig);
 		if (krb5Entries != null) {
 			for (String app : securityConfig.getLoginContextNames()) {
+				// TODO 按appName保存krb5认证信息
 				currentConfig.addAppConfigurationEntry(app, krb5Entries);
 			}
 		}
