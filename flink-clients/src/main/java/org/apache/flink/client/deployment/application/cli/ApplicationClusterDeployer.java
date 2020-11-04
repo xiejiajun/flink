@@ -61,7 +61,7 @@ public class ApplicationClusterDeployer implements ApplicationDeployer {
 		try (final ClusterDescriptor<ClusterID> clusterDescriptor = clientFactory.createClusterDescriptor(configuration)) {
 			final ClusterSpecification clusterSpecification = clientFactory.getClusterSpecification(configuration);
 
-			// TODO 提交任务到集群
+			// TODO yarn-application模式提交任务到集群 入口
 			clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
 		}
 	}

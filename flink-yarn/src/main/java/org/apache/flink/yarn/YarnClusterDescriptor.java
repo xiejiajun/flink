@@ -406,7 +406,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Preconditions.checkArgument(pipelineJars.size() == 1, "Should only have one jar");
 
 		try {
-			// TODO yarn-application模式
+			// TODO yarn-application模式(也没有在client端构建jobGraph，而是将Client提交到Yarn上运行)
 			return deployInternal(
 					clusterSpecification,
 					"Flink Application Cluster",
