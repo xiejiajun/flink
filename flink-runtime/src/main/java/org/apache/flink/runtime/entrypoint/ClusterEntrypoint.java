@@ -168,7 +168,9 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 			SecurityContext securityContext = installSecurityContext(configuration);
 
+			// TODO ugi.doAs运行
 			securityContext.runSecured((Callable<Void>) () -> {
+				// TODO 真正的运行入口
 				runCluster(configuration, pluginManager);
 
 				return null;
@@ -207,7 +209,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 	private void runCluster(Configuration configuration, PluginManager pluginManager) throws Exception {
 		synchronized (lock) {
-
+			// TODO 初始化Flink集群
 			initializeServices(configuration, pluginManager);
 
 			// write host information into configuration
@@ -216,6 +218,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 			final DispatcherResourceManagerComponentFactory dispatcherResourceManagerComponentFactory = createDispatcherResourceManagerComponentFactory(configuration);
 
+			// TODO 启动集群其他组件(指标采集、WebUI、Flink ResourceManager等)
 			clusterComponent = dispatcherResourceManagerComponentFactory.create(
 				configuration,
 				ioExecutor,
@@ -517,6 +520,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 		final String clusterEntrypointName = clusterEntrypoint.getClass().getSimpleName();
 		try {
+			// TODO 启动Flink集群
 			clusterEntrypoint.startCluster();
 		} catch (ClusterEntrypointException e) {
 			LOG.error(String.format("Could not start cluster entrypoint %s.", clusterEntrypointName), e);

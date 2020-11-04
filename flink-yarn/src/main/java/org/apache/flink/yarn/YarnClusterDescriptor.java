@@ -227,6 +227,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	 * method in case of session cluster.
 	 */
 	protected String getYarnSessionClusterEntrypoint() {
+		// TODO yarn-session 模式AM启动类
 		return YarnSessionClusterEntrypoint.class.getName();
 	}
 
@@ -236,6 +237,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	 * method in case of the job cluster.
 	 */
 	protected String getYarnJobClusterEntrypoint() {
+		// TODO yarn-per-job 模式AM启动类
 		return YarnJobClusterEntrypoint.class.getName();
 	}
 
@@ -410,7 +412,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			return deployInternal(
 					clusterSpecification,
 					"Flink Application Cluster",
-					YarnApplicationClusterEntryPoint.class.getName(),
+					YarnApplicationClusterEntryPoint.class.getName(),  // TODO yarn-application 模式AM启动类
 					null,
 					false);
 		} catch (Exception e) {

@@ -68,6 +68,8 @@ public class YarnJobClusterEntrypoint extends JobClusterEntrypoint {
 		SignalHandler.register(LOG);
 		JvmShutdownSafeguard.installAsShutdownHook(LOG);
 
+		// TODO org.apache.flink.yarn.YarnClusterDescriptor.startAppMaster里面将用户应用依赖的第三方包和其他配置都
+		//  放在了appMasterEnv中，这里可以通过System.getenv()获取到
 		Map<String, String> env = System.getenv();
 
 		final String workingDirectory = env.get(ApplicationConstants.Environment.PWD.key());
@@ -82,10 +84,12 @@ public class YarnJobClusterEntrypoint extends JobClusterEntrypoint {
 			LOG.warn("Could not log YARN environment information.", e);
 		}
 
+		// TODO 配置信息转换
 		Configuration configuration = YarnEntrypointUtils.loadConfiguration(workingDirectory, env);
 
 		YarnJobClusterEntrypoint yarnJobClusterEntrypoint = new YarnJobClusterEntrypoint(configuration);
 
+		// TODO 启动AM
 		ClusterEntrypoint.runClusterEntrypoint(yarnJobClusterEntrypoint);
 	}
 }
