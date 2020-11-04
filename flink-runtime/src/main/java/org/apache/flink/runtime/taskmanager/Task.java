@@ -543,6 +543,7 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 	@Override
 	public void run() {
 		try {
+			// TODO 任务执行逻辑
 			doRun();
 		} finally {
 			terminationFuture.complete(executionState);
@@ -606,7 +607,9 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 			// this may involve downloading the job's JAR files and/or classes
 			LOG.info("Loading JAR files for task {}.", this);
 
+			// TODO 创建一个可以加载用户依赖的类加载器来加载用户代码
 			userCodeClassLoader = createUserCodeClassloader();
+			// TODO serializedExecutionConfig保存了序列化的代码，等待这里的类加载器来反序列化
 			final ExecutionConfig executionConfig = serializedExecutionConfig.deserializeValue(userCodeClassLoader);
 
 			if (executionConfig.getTaskCancellationInterval() >= 0) {
@@ -696,6 +699,7 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 			executingThread.setContextClassLoader(userCodeClassLoader);
 
 			// now load and instantiate the task's invokable code
+			// TODO 反序列化用户代码
 			invokable = loadAndInstantiateInvokable(userCodeClassLoader, nameOfInvokableClass, env);
 
 			// ----------------------------------------------------------------
@@ -717,6 +721,7 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 			// make sure the user code classloader is accessible thread-locally
 			executingThread.setContextClassLoader(userCodeClassLoader);
 
+			// TODO 运行用户定义的算子
 			// run the invokable
 			invokable.invoke();
 

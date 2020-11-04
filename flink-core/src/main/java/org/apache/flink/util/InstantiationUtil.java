@@ -562,6 +562,16 @@ public final class InstantiationUtil {
 		return deserializeObject(new ByteArrayInputStream(bytes), cl, isFailureTolerant);
 	}
 
+	/**
+	 * TODO 使用可以读取用户依赖的类加载器读取用户代码
+	 * @param in
+	 * @param cl
+	 * @param isFailureTolerant
+	 * @param <T>
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T deserializeObject(InputStream in, ClassLoader cl, boolean isFailureTolerant)
 			throws IOException, ClassNotFoundException {
