@@ -206,6 +206,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 			dispatcherRunner = dispatcherRunnerFactory.createDispatcherRunner(
 				highAvailabilityServices.getDispatcherLeaderElectionService(),
 				fatalErrorHandler,
+				// TODO JobGraphFactory
 				new HaServicesJobGraphStoreFactory(highAvailabilityServices),
 				ioExecutor,
 				rpcService,
