@@ -511,6 +511,7 @@ public class FlinkYarnSessionCli extends AbstractCustomCommandLine {
 				} else {
 					final ClusterSpecification clusterSpecification = yarnClusterClientFactory.getClusterSpecification(configuration);
 
+					// TODO yarn-session模式启动入口
 					clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(clusterSpecification);
 					ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
 
