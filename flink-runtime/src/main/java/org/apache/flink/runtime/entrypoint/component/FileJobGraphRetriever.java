@@ -84,6 +84,7 @@ public class FileJobGraphRetriever extends AbstractUserClassPathJobGraphRetrieve
 
 	public static FileJobGraphRetriever createFrom(Configuration configuration, @Nullable File usrLibDir) throws IOException {
 		checkNotNull(configuration, "configuration");
+		// TODO 传入jobGraph配置文件构建FileJobGraphRetriever
 		return new FileJobGraphRetriever(configuration.getString(JOB_GRAPH_FILE_PATH), usrLibDir);
 	}
 }

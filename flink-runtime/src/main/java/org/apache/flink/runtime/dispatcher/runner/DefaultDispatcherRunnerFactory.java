@@ -48,6 +48,9 @@ public class DefaultDispatcherRunnerFactory implements DispatcherRunnerFactory {
 			RpcService rpcService,
 			PartialDispatcherServices partialDispatcherServices) throws Exception {
 
+		// TODO yarn-per-job、yarn-session和yarn-application模式的主要区别也就体现在启动的DispatcherLeaderProcessFactory上
+		//  其中由于yarn-session和yarn-application都没在cli构建jobGraph，在这里他们得到的都是SessionDispatcherLeaderProcessFactory
+		//  只不过内部具体实现不同
 		final DispatcherLeaderProcessFactory dispatcherLeaderProcessFactory = dispatcherLeaderProcessFactoryFactory.createFactory(
 			jobGraphStoreFactory,
 			ioExecutor,

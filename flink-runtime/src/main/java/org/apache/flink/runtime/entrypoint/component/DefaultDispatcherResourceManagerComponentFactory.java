@@ -79,12 +79,22 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	/**
+	 * TODO DefaultDispatcherRunnerFactory:虽然只有一种实现，但是它内部的DispatcherLeaderProcessFactoryFactory有多种实现
+	 *   yarn-per-job、yarn-session、yarn-application的任务解析逻辑也体现在DispatcherLeaderProcessFactoryFactory的实现上
+	 */
 	@Nonnull
 	private final DispatcherRunnerFactory dispatcherRunnerFactory;
 
+	/**
+	 * TODO k8s、standalone、yarn三种实现
+	 */
 	@Nonnull
 	private final ResourceManagerFactory<?> resourceManagerFactory;
 
+	/**
+	 * TODO JobRestEndpointFactory、SessionRestEndpointFactory两种实现
+	 */
 	@Nonnull
 	private final RestEndpointFactory<?> restEndpointFactory;
 
@@ -191,6 +201,8 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 				metricRegistry.getMetricQueryServiceGatewayRpcAddress());
 
 			log.debug("Starting Dispatcher.");
+			// TODO yarn-per-job、yarn-session和yarn-application模式的主要区别也就体现在启动的dispatcherRunner内部的
+			//  DispatcherLeaderProcessFactory上
 			dispatcherRunner = dispatcherRunnerFactory.createDispatcherRunner(
 				highAvailabilityServices.getDispatcherLeaderElectionService(),
 				fatalErrorHandler,
@@ -256,18 +268,32 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 		}
 	}
 
+	/**
+	 * TODO yarn-session模式的DispatcherResourceManagerComponentFactory
+	 * @param resourceManagerFactory
+	 * @return
+	 */
 	public static DefaultDispatcherResourceManagerComponentFactory createSessionComponentFactory(
 			ResourceManagerFactory<?> resourceManagerFactory) {
 		return new DefaultDispatcherResourceManagerComponentFactory(
+			// TODO 内部的DispatcherLeaderProcessFactoryFactory为SessionDispatcherLeaderProcessFactoryFactory
 			DefaultDispatcherRunnerFactory.createSessionRunner(SessionDispatcherFactory.INSTANCE),
 			resourceManagerFactory,
 			SessionRestEndpointFactory.INSTANCE);
 	}
 
+	/**
+	 * TODO yarn-per-job模式的DispatcherResourceManagerComponentFactory
+	 * @param resourceManagerFactory
+	 * @param jobGraphRetriever
+	 * @return
+	 */
 	public static DefaultDispatcherResourceManagerComponentFactory createJobComponentFactory(
 			ResourceManagerFactory<?> resourceManagerFactory,
 			JobGraphRetriever jobGraphRetriever) {
 		return new DefaultDispatcherResourceManagerComponentFactory(
+			// TODO 和yarn-application模式的主要区别在于这里根据已有的jobGraphRetriever构建DefaultDispatcherRunnerFactory
+			//  最终内部的DispatcherLeaderProcessFactoryFactory为JobDispatcherLeaderProcessFactoryFactory
 			DefaultDispatcherRunnerFactory.createJobRunner(jobGraphRetriever),
 			resourceManagerFactory,
 			JobRestEndpointFactory.INSTANCE);

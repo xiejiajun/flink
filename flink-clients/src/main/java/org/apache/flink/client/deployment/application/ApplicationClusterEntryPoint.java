@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
+ * TODO 有yarn、standalone和k8s三种实现
  * Base class for cluster entry points targeting executing applications in "Application Mode".
  * The lifecycle of the enrtypoint is bound to that of the specific application being executed,
  * and the {@code main()} method of the application is run on the cluster.
@@ -65,8 +66,11 @@ public class ApplicationClusterEntryPoint extends ClusterEntrypoint {
 
 	@Override
 	protected DispatcherResourceManagerComponentFactory createDispatcherResourceManagerComponentFactory(final Configuration configuration) {
+		// TODO yarn-application、k8s-application等模式的DispatcherResourceManagerComponentFactory
 		return new DefaultDispatcherResourceManagerComponentFactory(
 				new DefaultDispatcherRunnerFactory(
+					// TODO 和yarn-per-job模式的区别在于这里没有jobGraphReceiver,所以内部的DispatcherLeaderProcessFactoryFactory
+					//  最终为ApplicationDispatcherLeaderProcessFactoryFactory
 						ApplicationDispatcherLeaderProcessFactoryFactory
 								.create(configuration, SessionDispatcherFactory.INSTANCE, program)),
 				resourceManagerFactory,

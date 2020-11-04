@@ -216,6 +216,8 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 			configuration.setString(JobManagerOptions.ADDRESS, commonRpcService.getAddress());
 			configuration.setInteger(JobManagerOptions.PORT, commonRpcService.getPort());
 
+			// TODO yarn-per-job、yarn-session和yarn-application三种模式的启动方式主要不同点都在createDispatcherResourceManagerComponentFactory方法的实现上
+			//  主要是里面的dispatcherRunnerFactory、resourceManagerFactory、restEndpointFactory的实现上有差别
 			final DispatcherResourceManagerComponentFactory dispatcherResourceManagerComponentFactory = createDispatcherResourceManagerComponentFactory(configuration);
 
 			// TODO 启动集群其他组件(指标采集、WebUI、Flink ResourceManager等)

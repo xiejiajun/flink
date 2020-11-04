@@ -58,7 +58,7 @@ public class YarnSessionClusterEntrypoint extends SessionClusterEntrypoint {
 		EnvironmentInformation.logEnvironmentInfo(LOG, YarnSessionClusterEntrypoint.class.getSimpleName(), args);
 		SignalHandler.register(LOG);
 		JvmShutdownSafeguard.installAsShutdownHook(LOG);
-
+        // TODO yarn-session模式获取am容器请求传递过来的系统变量
 		Map<String, String> env = System.getenv();
 
 		final String workingDirectory = env.get(ApplicationConstants.Environment.PWD.key());
