@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * TODO yarn-application模式的MainClass
  * An {@link ApplicationClusterEntryPoint} for Yarn.
  */
 @Internal

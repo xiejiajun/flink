@@ -183,6 +183,7 @@ public class CliFrontend {
 		final CustomCommandLine activeCommandLine =
 				validateAndGetActiveCommandLine(checkNotNull(commandLine));
 
+		// TODO 解析 flink run-application的参数
 		final ProgramOptions programOptions = new ProgramOptions(commandLine);
 
 		final ApplicationDeployer deployer =
@@ -217,11 +218,13 @@ public class CliFrontend {
 		final CustomCommandLine activeCommandLine =
 				validateAndGetActiveCommandLine(checkNotNull(commandLine));
 
+		// TODO 解析-C  -d等参数
 		final ProgramOptions programOptions = ProgramOptions.create(commandLine);
 
 		final PackagedProgram program =
 				getPackagedProgram(programOptions);
 
+		// TODO 获取Flink APP fat jar中依赖
 		final List<URL> jobJars = program.getJobJarAndDependencies();
 		final Configuration effectiveConfiguration = getEffectiveConfiguration(
 				activeCommandLine, commandLine, programOptions, jobJars);
@@ -239,6 +242,7 @@ public class CliFrontend {
 		PackagedProgram program;
 		try {
 			LOG.info("Building program from JAR file");
+			// TODO 使用用户提交时的参数组装提交对象
 			program = buildProgram(programOptions);
 		} catch (FileNotFoundException e) {
 			throw new CliArgsException("Could not build the program from JAR file: " + e.getMessage(), e);
@@ -913,9 +917,12 @@ public class CliFrontend {
 			// do action
 			switch (action) {
 				case ACTION_RUN:
+					// TODO flink run
 					run(params);
 					return 0;
 				case ACTION_RUN_APPLICATION:
+					// TODO flink run-application:
+					//  https://ci.apache.org/projects/flink/flink-docs-release-1.11/ops/deployment/#application-mode
 					runApplication(params);
 					return 0;
 				case ACTION_LIST:

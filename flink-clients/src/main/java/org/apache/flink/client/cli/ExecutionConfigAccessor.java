@@ -61,6 +61,7 @@ public class ExecutionConfigAccessor {
 		final Configuration configuration = new Configuration();
 
 		options.applyToConfiguration(configuration);
+		// TODO 将依赖信息保存到configuration
 		ConfigUtils.encodeCollectionToConfig(configuration, PipelineOptions.JARS, jobJars, Object::toString);
 
 		return new ExecutionConfigAccessor(configuration);

@@ -171,6 +171,7 @@ class YarnApplicationFileUploader implements AutoCloseable {
 		}
 
 		final File localFile = new File(resourcePath.toUri().getPath());
+		// TODO 上传依赖资源
 		final Tuple2<Path, Long> remoteFileInfo = uploadLocalFileToRemote(resourcePath, relativeDstPath);
 		final YarnLocalResourceDescriptor descriptor = new YarnLocalResourceDescriptor(
 			key,
@@ -190,6 +191,7 @@ class YarnApplicationFileUploader implements AutoCloseable {
 		final File localFile = new File(localSrcPath.toUri().getPath());
 		checkArgument(!localFile.isDirectory(), "File to copy cannot be a directory: " + localSrcPath);
 
+		// TODO 上传资源到DFS
 		final Path dst = copyToRemoteApplicationDir(localSrcPath, relativeDstPath, fileReplication);
 
 		// Note: If we directly used registerLocalResource(FileSystem, Path) here, we would access the remote
@@ -263,6 +265,7 @@ class YarnApplicationFileUploader implements AutoCloseable {
 			final Path relativePath = relativePaths.get(i);
 			if (!isFlinkDistJar(relativePath.getName())) {
 				final String key = relativePath.toString();
+				// TODO 注册成Yarn容器能访问的资源（上传并注册）
 				final YarnLocalResourceDescriptor resourceDescriptor = registerSingleLocalResource(
 						key,
 						localPath,
@@ -282,6 +285,7 @@ class YarnApplicationFileUploader implements AutoCloseable {
 
 		// construct classpath, we always want resource directories to go first, we also sort
 		// both resources and archives in order to make classpath deterministic
+		// TODO 添加到classpath
 		final ArrayList<String> classPaths = new ArrayList<>();
 		resources.stream().sorted().forEach(classPaths::add);
 		archives.stream().sorted().forEach(classPaths::add);
@@ -345,6 +349,14 @@ class YarnApplicationFileUploader implements AutoCloseable {
 		return new YarnApplicationFileUploader(fileSystem, homeDirectory, providedLibDirs, applicationId, fileReplication);
 	}
 
+	/**
+	 * TODO 上传依赖资源到DFS
+	 * @param localSrcPath
+	 * @param relativeDstPath
+	 * @param replicationFactor
+	 * @return
+	 * @throws IOException
+	 */
 	private Path copyToRemoteApplicationDir(
 			final Path localSrcPath,
 			final String relativeDstPath,

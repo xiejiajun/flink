@@ -222,6 +222,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	}
 
 	/**
+	 * TODO yarn-session模式的MainClass
 	 * The class to start the application master with. This class runs the main
 	 * method in case of session cluster.
 	 */
@@ -230,6 +231,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	}
 
 	/**
+	 * TODO yarn-cluster模式的MainClass
 	 * The class to start the application master with. This class runs the main
 	 * method in case of the job cluster.
 	 */
@@ -404,6 +406,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Preconditions.checkArgument(pipelineJars.size() == 1, "Should only have one jar");
 
 		try {
+			// TODO yarn-application模式
 			return deployInternal(
 					clusterSpecification,
 					"Flink Application Cluster",
@@ -521,6 +524,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 
 		flinkConfiguration.setString(ClusterEntrypoint.EXECUTION_MODE, executionMode.toString());
 
+		// TODO 启动AM(yarnClusterEntrypoint为MainClass)
 		ApplicationReport report = startAppMaster(
 				flinkConfiguration,
 				applicationName,
@@ -680,6 +684,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			getFileReplication());
 
 		// The files need to be shipped and added to classpath.
+		// TODO 需要共享的依赖 & 配置文件
 		Set<File> systemShipFiles = new HashSet<>(shipFiles.size());
 		for (File file : shipFiles) {
 			systemShipFiles.add(file.getAbsoluteFile());
@@ -723,6 +728,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 
 		final Set<Path> userJarFiles = new HashSet<>();
 		if (jobGraph != null) {
+			// TODO 用于依赖包
 			userJarFiles.addAll(jobGraph.getUserJars().stream().map(f -> f.toUri()).map(Path::new).collect(Collectors.toSet()));
 		}
 
@@ -753,6 +759,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		// Register all files in provided lib dirs as local resources with public visibility
 		// and upload the remaining dependencies as local resources with APPLICATION visibility.
 		final List<String> systemClassPaths = fileUploader.registerProvidedLocalResources();
+		// TODO 上传系统依赖并注册成资源方便集群使用
 		final List<String> uploadedDependencies = fileUploader.registerMultipleLocalResources(
 			systemShipFiles.stream().map(e -> new Path(e.toURI())).collect(Collectors.toSet()),
 			Path.CUR_DIR);
@@ -769,6 +776,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		// Upload and register user jars
+		// TODO 上传用户依赖并注册成资源方便集群使用
 		final List<String> userClassPaths = fileUploader.registerMultipleLocalResources(
 			userJarFiles,
 			userJarInclusion == YarnConfigOptions.UserJarInclusion.DISABLED ?
@@ -878,6 +886,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 				File krb5 = new File(krb5Config);
 				LOG.info("Adding KRB5 configuration {} to the AM container local resource bucket", krb5.getAbsolutePath());
 				Path krb5ConfPath = new Path(krb5.getAbsolutePath());
+				// TODO 上传kerberos认证信息
 				remoteKrb5Path = fileUploader.registerSingleLocalResource(
 					Utils.KRB5_FILE_NAME,
 					krb5ConfPath,
@@ -897,6 +906,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			if (localizeKeytab) {
 				// Localize the keytab to YARN containers via local resource.
 				LOG.info("Adding keytab {} to the AM container local resource bucket", keytab);
+				// TODO 上传keytab文件
 				remotePathKeytab = fileUploader.registerSingleLocalResource(
 					localizedKeytabPath,
 					new Path(keytab),
@@ -912,6 +922,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		final JobManagerProcessSpec processSpec = JobManagerProcessUtils.processSpecFromConfigWithNewOptionToInterpretLegacyHeap(
 			flinkConfiguration,
 			JobManagerOptions.TOTAL_PROCESS_MEMORY);
+		// TODO 配置提交到Yarn的容器的启动命令（yarnClusterEntrypoint为AM的MainClass)
 		final ContainerLaunchContext amContainer = setupApplicationMasterContainer(
 				yarnClusterEntrypoint,
 				hasKrb5,
@@ -933,6 +944,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		appMasterEnv.putAll(
 			ConfigurationUtils.getPrefixedKeyValuePairs(ResourceManagerOptions.CONTAINERIZED_MASTER_ENV_PREFIX, configuration));
 		// set Flink app class path
+		// TODO 将classpath设置到appMasterEnv进行下发
 		appMasterEnv.put(YarnConfigKeys.ENV_FLINK_CLASSPATH, classPathBuilder.toString());
 
 		// set Flink on YARN internal configuration values
@@ -966,6 +978,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		// set classpath from YARN configuration
 		Utils.setupYarnClassPath(yarnConfiguration, appMasterEnv);
 
+		// TODO appMasterEnv设置到容器，容器中的应用就可以方便获取到classpath信息了
 		amContainer.setEnvironment(appMasterEnv);
 
 		// Set up resource type requirements for ApplicationMaster
@@ -999,6 +1012,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Thread deploymentFailureHook = new DeploymentFailureHook(yarnApplication, fileUploader.getApplicationDir());
 		Runtime.getRuntime().addShutdownHook(deploymentFailureHook);
 		LOG.info("Submitting application master " + appId);
+		// TODO 提交AM
 		yarnClient.submitApplication(appContext);
 
 		LOG.info("Waiting for the cluster to be allocated");
@@ -1445,6 +1459,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		final  Map<String, String> startCommandValues = new HashMap<>();
 		startCommandValues.put("java", "$JAVA_HOME/bin/java");
 
+		// TODO 生成JVM参数
 		String jvmHeapMem = JobManagerProcessUtils.generateJvmParametersStr(processSpec, flinkConfiguration);
 		startCommandValues.put("jvmmem", jvmHeapMem);
 
@@ -1460,6 +1475,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		final String commandTemplate = flinkConfiguration
 				.getString(ConfigConstants.YARN_CONTAINER_START_COMMAND_TEMPLATE,
 						ConfigConstants.DEFAULT_YARN_CONTAINER_START_COMMAND_TEMPLATE);
+		// TODO 生成AM启动命令（JobManager?)
 		final String amCommand =
 			BootstrapTools.getStartCommand(commandTemplate, startCommandValues);
 

@@ -405,6 +405,7 @@ public class PackagedProgram {
 	}
 
 	/**
+	 * TODO 提取用户指定的jar中包含的jar文件到系统临时文件夹
 	 * Takes all JAR files that are contained in this program's JAR file and extracts them
 	 * to the system's temp directory.
 	 *
@@ -414,6 +415,7 @@ public class PackagedProgram {
 	public static List<File> extractContainedLibraries(URL jarFile) throws ProgramInvocationException {
 		try (final JarFile jar = new JarFile(new File(jarFile.toURI()))) {
 
+			// TODO 获取jar包中lib下面的jar依赖
 			final List<JarEntry> containedJarFileEntries = getContainedJarEntries(jar);
 			if (containedJarFileEntries.isEmpty()) {
 				return Collections.emptyList();
