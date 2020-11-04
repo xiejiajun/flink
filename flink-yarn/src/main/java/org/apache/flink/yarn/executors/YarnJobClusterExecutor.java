@@ -27,6 +27,7 @@ import org.apache.flink.yarn.configuration.YarnDeploymentTarget;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 /**
+ * TODO yarn-per-job模式的启动类
  * The {@link PipelineExecutor} to be used when executing a job in isolation.
  * This executor will start a cluster specifically for the job at hand and
  * tear it down when the job is finished either successfully or due to an error.
