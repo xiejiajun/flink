@@ -721,7 +721,11 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 			// make sure the user code classloader is accessible thread-locally
 			executingThread.setContextClassLoader(userCodeClassLoader);
 
-			// TODO 运行用户定义的算子
+			// TODO 运行用户定义的算子(通过反射)
+			//  [flink源码解析之任务执行流程](https://blog.csdn.net/zhangjun5965/article/details/88944774): 这里描述了主流程框架
+			//  [Flink源码-task执行](https://blog.csdn.net/u013939918/article/details/106965246)
+			//  [flink源码解析（1）透过源码看懂Flink核心框架的执行流程](https://www.cnblogs.com/huanghanyu/p/12857971.html)
+			//  [追源索骥：透过源码看懂Flink核心框架的执行流程](https://www.cnblogs.com/davidwang456/articles/10647291.html)
 			// run the invokable
 			invokable.invoke();
 

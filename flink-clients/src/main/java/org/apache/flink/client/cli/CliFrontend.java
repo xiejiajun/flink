@@ -309,6 +309,7 @@ public class CliFrontend {
 			final Configuration effectiveConfiguration = getEffectiveConfiguration(
 					activeCommandLine, commandLine, programOptions, program.getJobJarAndDependencies());
 
+			// TODO 这里会运行用户的mainClass
 			Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, effectiveConfiguration, parallelism, true);
 			String jsonPlan = FlinkPipelineTranslationUtil.translateToJSONExecutionPlan(pipeline);
 
