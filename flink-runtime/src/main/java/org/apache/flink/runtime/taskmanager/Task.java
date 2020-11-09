@@ -282,6 +282,7 @@ public class Task implements Runnable, TaskSlotPayload, TaskActions, PartitionPr
 	/**
 	 * <p><b>IMPORTANT:</b> This constructor may not start any work that would need to
 	 * be undone in the case of a failing task deployment.</p>
+	 * TODO taskInformation里面保存了用户算子代码等信息
 	 */
 	public Task(
 		JobInformation jobInformation,

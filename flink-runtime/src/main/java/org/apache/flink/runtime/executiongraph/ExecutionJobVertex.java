@@ -391,6 +391,7 @@ public class ExecutionJobVertex implements AccessExecutionJobVertex, Archiveable
 					jobVertex.getName(),
 					parallelism,
 					maxParallelism,
+					// TODO 用户代码入口类
 					jobVertex.getInvokableClassName(),
 					jobVertex.getConfiguration());
 

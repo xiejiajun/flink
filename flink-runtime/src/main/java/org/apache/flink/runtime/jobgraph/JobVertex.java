@@ -225,6 +225,10 @@ public class JobVertex implements java.io.Serializable {
 		return this.configuration;
 	}
 
+	/**
+	 * TODO 通过这个方法设置的DataSourceTask、DataSinkTask等Task类型会在Worker上反序列化后作为执行入口
+	 * @param invokable
+	 */
 	public void setInvokableClass(Class<? extends AbstractInvokable> invokable) {
 		Preconditions.checkNotNull(invokable);
 		this.invokableClassName = invokable.getName();
