@@ -376,6 +376,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	@Override
 	public ClusterClientProvider<ApplicationId> deploySessionCluster(ClusterSpecification clusterSpecification) throws ClusterDeploymentException {
 		try {
+			// TODO yarn-session模式提交
 			return deployInternal(
 					clusterSpecification,
 					"Flink session cluster",
@@ -426,6 +427,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		JobGraph jobGraph,
 		boolean detached) throws ClusterDeploymentException {
 		try {
+			// TODO yarn-per-job模式提交入口
 			return deployInternal(
 				clusterSpecification,
 				"Flink per-job cluster",

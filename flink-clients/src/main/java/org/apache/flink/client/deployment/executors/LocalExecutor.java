@@ -78,6 +78,7 @@ public class LocalExecutor implements PipelineExecutor {
 
 		final JobGraph jobGraph = getJobGraph(pipeline, effectiveConfig);
 
+		// TODO 本地运行环境作业提交
 		return PerJobMiniClusterFactory.createWithFactory(effectiveConfig, miniClusterFactory).submitJob(jobGraph);
 	}
 

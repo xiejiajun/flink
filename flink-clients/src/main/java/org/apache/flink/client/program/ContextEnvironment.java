@@ -67,6 +67,12 @@ public class ContextEnvironment extends ExecutionEnvironment {
 		this.jobCounter = 0;
 	}
 
+	/**
+	 * TODO 用户代码中的env.execute是调用这里的代码
+	 * @param jobName
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public JobExecutionResult execute(String jobName) throws Exception {
 		final JobClient jobClient = executeAsync(jobName);
@@ -118,9 +124,16 @@ public class ContextEnvironment extends ExecutionEnvironment {
 		return jobExecutionResult;
 	}
 
+	/**
+	 * TODO Flink batch作业提交到集群的逻辑入口
+	 * @param jobName
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public JobClient executeAsync(String jobName) throws Exception {
 		validateAllowedExecution();
+		// TODO 提交作业并返回可交互的客户端
 		final JobClient jobClient = super.executeAsync(jobName);
 
 		if (!suppressSysout) {

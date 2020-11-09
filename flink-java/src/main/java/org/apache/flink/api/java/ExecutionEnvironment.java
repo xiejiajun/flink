@@ -959,6 +959,7 @@ public class ExecutionEnvironment {
 	public JobClient executeAsync(String jobName) throws Exception {
 		checkNotNull(configuration.get(DeploymentOptions.TARGET), "No execution.target specified in your configuration file.");
 
+		// TODO 创建执行计划
 		final Plan plan = createProgramPlan(jobName);
 		final PipelineExecutorFactory executorFactory =
 			executorServiceLoader.getExecutorFactory(configuration);
@@ -970,9 +971,11 @@ public class ExecutionEnvironment {
 
 		CompletableFuture<JobClient> jobClientFuture = executorFactory
 			.getExecutor(configuration)
+			// TODO 构建JobGraph并提交
 			.execute(plan, configuration);
 
 		try {
+			// TODO 返回用于和执行过程交互的JobClient
 			JobClient jobClient = jobClientFuture.get();
 			jobListeners.forEach(jobListener -> jobListener.onJobSubmitted(jobClient, null));
 			return jobClient;
@@ -1134,11 +1137,13 @@ public class ExecutionEnvironment {
 	 * If the program is invoked standalone, this method returns a local execution environment, as returned by
 	 * {@link #createLocalEnvironment()}. If the program is invoked from within the command line client to be
 	 * submitted to a cluster, this method returns the execution environment of this cluster.
-	 *
+	 * TODO 获取执行环境
+	 *  用户mainClass里面的env.getExecutionEnvironment调用的是这里
 	 * @return The execution environment of the context in which the program is executed.
 	 */
 	public static ExecutionEnvironment getExecutionEnvironment() {
 		return Utils.resolveFactory(threadLocalContextEnvironmentFactory, contextEnvironmentFactory)
+			// TODO 调用ExecutionEnvironmentFactory实现类的createExecutionEnvironment方法创建执行环境
 			.map(ExecutionEnvironmentFactory::createExecutionEnvironment)
 			.orElseGet(ExecutionEnvironment::createLocalEnvironment);
 	}
@@ -1324,7 +1329,7 @@ public class ExecutionEnvironment {
 	 * running programs in the Scala shell.
 	 *
 	 * <p>When the context environment factory is set, no other environments can be explicitly used.
-	 *
+	 * TODO 这里初始化的是用户mainClass中通过ExecutionEnvironment.getExecutionEnvironment获取到的执行环境
 	 * @param ctx The context environment factory.
 	 */
 	protected static void initializeContextEnvironment(ExecutionEnvironmentFactory ctx) {

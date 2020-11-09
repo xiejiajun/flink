@@ -1809,6 +1809,7 @@ public class StreamExecutionEnvironment {
 
 		CompletableFuture<JobClient> jobClientFuture = executorFactory
 			.getExecutor(configuration)
+			// TODO 构建JobGraph并提交
 			.execute(streamGraph, configuration);
 
 		try {
@@ -1929,12 +1930,13 @@ public class StreamExecutionEnvironment {
 	 * program is currently executed. If the program is invoked standalone, this
 	 * method returns a local execution environment, as returned by
 	 * {@link #createLocalEnvironment()}.
-	 *
+	 * TODO 用户mainClass里面的env.getExecutionEnvironment调用的是这里
 	 * @return The execution environment of the context in which the program is
 	 * executed.
 	 */
 	public static StreamExecutionEnvironment getExecutionEnvironment() {
 		return Utils.resolveFactory(threadLocalContextEnvironmentFactory, contextEnvironmentFactory)
+			// TODO 调用StreamExecutionEnvironmentFactory实现类的createExecutionEnvironment方法创建执行环境
 			.map(StreamExecutionEnvironmentFactory::createExecutionEnvironment)
 			.orElseGet(StreamExecutionEnvironment::createLocalEnvironment);
 	}
@@ -2115,6 +2117,10 @@ public class StreamExecutionEnvironment {
 	//  Methods to control the context and local environments for execution from packaged programs
 	// --------------------------------------------------------------------------------------------
 
+	/**
+	 * TODO 这里初始化的是用户mainClass中通过StreamExecutionEnvironment.getExecutionEnvironment获取到的执行环境
+	 * @param ctx
+	 */
 	protected static void initializeContextEnvironment(StreamExecutionEnvironmentFactory ctx) {
 		contextEnvironmentFactory = ctx;
 		threadLocalContextEnvironmentFactory.set(contextEnvironmentFactory);

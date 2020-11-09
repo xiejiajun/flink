@@ -129,6 +129,7 @@ public class PackagedProgram {
 
 		// now that we have an entry point, we can extract the nested jar files (if any)
 		this.extractedTempLibraries = this.jarFile == null ? Collections.emptyList() : extractContainedLibraries(this.jarFile);
+		// TODO 构建Client侧使用的用户代码类加载器
 		this.userCodeClassLoader = ClientUtils.buildUserCodeClassLoader(
 			getJobJarAndDependencies(),
 			classpaths,
@@ -136,6 +137,7 @@ public class PackagedProgram {
 			configuration);
 
 		// load the entry point class
+		// TODO 查找和加载mainClass
 		this.mainClass = loadMainClass(
 			// if no entryPointClassName name was given, we try and look one up through the manifest
 			entryPointClassName != null ? entryPointClassName : getEntryPointClassNameFromJar(this.jarFile),
@@ -195,6 +197,7 @@ public class PackagedProgram {
 	 * will be a local execution by default.
 	 */
 	public void invokeInteractiveModeForExecution() throws ProgramInvocationException {
+		// TODO 调用mainClass的main方法
 		callMainMethod(mainClass, args);
 	}
 
@@ -285,6 +288,7 @@ public class PackagedProgram {
 		}
 
 		try {
+			// TODO 反射调用main方法
 			mainMethod.invoke(null, (Object) args);
 		} catch (IllegalArgumentException e) {
 			throw new ProgramInvocationException("Could not invoke the main method, arguments are not matching.", e);
@@ -552,6 +556,11 @@ public class PackagedProgram {
 			return this;
 		}
 
+		/**
+		 * TODO 根据用户配置构建用于加载用户提交的jar及其依赖的PackagedProgram
+		 * @return
+		 * @throws ProgramInvocationException
+		 */
 		public PackagedProgram build() throws ProgramInvocationException {
 			if (jarFile == null && entryPointClassName == null) {
 				throw new IllegalArgumentException("The jarFile and entryPointClassName can not be null at the same time.");

@@ -68,6 +68,7 @@ public class AbstractJobClusterExecutor<ClusterID, ClientFactory extends Cluster
 			final ClusterSpecification clusterSpecification = clusterClientFactory.getClusterSpecification(configuration);
 
 			final ClusterClientProvider<ClusterID> clusterClientProvider = clusterDescriptor
+				    // TODO 部署作业到集群(适合yarn-per-job、k8s等)
 					.deployJobCluster(clusterSpecification, jobGraph, configAccessor.getDetachedMode());
 			LOG.info("Job has been submitted with JobID " + jobGraph.getJobID());
 

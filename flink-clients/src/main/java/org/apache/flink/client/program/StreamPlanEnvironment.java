@@ -48,12 +48,14 @@ public class StreamPlanEnvironment extends StreamExecutionEnvironment {
 	@Override
 	public JobClient executeAsync(StreamGraph streamGraph) {
 		pipeline = streamGraph;
-
+        // TODO 提交作业的入口在ExecutionEnvironment / ExecutionEnvironment的executeAsync方法里面
+		//   这里只生成StreamGraph然后就抛出异常，保证用户定义的mainClass执行后只生成执行计划，而不真正提交作业
 		// do not go on with anything now!
 		throw new ProgramAbortException();
 	}
 
 	public void setAsContext() {
+		// TODO 构建用于返回StreamPlanEnvironment的StreamExecutionEnvironmentFactory
 		StreamExecutionEnvironmentFactory factory = () -> this;
 		initializeContextEnvironment(factory);
 	}

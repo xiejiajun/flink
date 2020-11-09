@@ -46,11 +46,14 @@ public class OptimizerPlanEnvironment extends ExecutionEnvironment {
 	public JobClient executeAsync(String jobName) {
 		pipeline = createProgramPlan();
 
+		// TODO 提交作业的入口在ExecutionEnvironment / ExecutionEnvironment的executeAsync方法里面
+		//   这里只生成StreamGraph然后就抛出异常，保证用户定义的mainClass执行后只生成执行计划，而不真正提交作业
 		// do not go on with anything now!
 		throw new ProgramAbortException();
 	}
 
 	public void setAsContext() {
+		// TODO 构建用于返回OptimizerPlanEnvironment的ExecutionEnvironmentFactory
 		ExecutionEnvironmentFactory factory = () -> this;
 		initializeContextEnvironment(factory);
 	}

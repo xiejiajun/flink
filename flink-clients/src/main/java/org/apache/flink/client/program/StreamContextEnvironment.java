@@ -122,9 +122,16 @@ public class StreamContextEnvironment extends StreamExecutionEnvironment {
 		return jobExecutionResult;
 	}
 
+	/**
+	 * TODO Flink stream作业提交到集群的逻辑入口
+	 * @param streamGraph the stream graph representing the transformations
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public JobClient executeAsync(StreamGraph streamGraph) throws Exception {
 		validateAllowedExecution();
+		// TODO 提交作业并返回可交互的客户端
 		final JobClient jobClient = super.executeAsync(streamGraph);
 
 		if (!suppressSysout) {

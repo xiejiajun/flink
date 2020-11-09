@@ -139,17 +139,31 @@ public enum PackagedProgramUtils {
 			configuration,
 			program.getUserCodeClassLoader(),
 			parallelism);
+		// TODO 设置OptimizerPlanEnvironment作为用户mainClass中ExecutionEnvironment.getExecutionEnvironment获取
+		//  到的执行环境
 		benv.setAsContext();
 		StreamPlanEnvironment senv = new StreamPlanEnvironment(
 			configuration,
 			program.getUserCodeClassLoader(),
 			parallelism);
+		// TODO 设置StreamPlanEnvironment作为用户mainClass中StreamExecutionEnvironment.getExecutionEnvironment获取
+		//  到的执行环境
+		//  需要注意的是：如果用户代码中是通过createLocalEnvironment创建的执行上下文，那就没法通过flink info命令来查看执行计划了，
+		//            因为这里设置的执行上下文无法传递到用户的mainClass中。 上同
 		senv.setAsContext();
 
 		try {
+			// TODO 本地调用Main方法
+			//  提交作业的入口在ExecutionEnvironment / ExecutionEnvironment的executeAsync方法里面
+			//  这里通过OptimizerPlanEnvironment、StreamPlanEnvironment作为
+			//  ExecutionEnvironment / ExecutionEnvironment的实现，保证执行用户的mainClass时不会真正提交作业
+			//  而是只构建出作业执行的pipeline
 			program.invokeInteractiveModeForExecution();
 		} catch (Throwable t) {
 			if (benv.getPipeline() != null) {
+				// TODO 通过执行用户代码获取Pipeline
+				//  （在异常中获取是因为OptimizerPlanEnvironment/StreamPlanEnvironment的executeAsync是通过抛出ProgramAbortException
+				//  来实现生成pipeline信息后终止作业提交的逻辑的）
 				return benv.getPipeline();
 			}
 

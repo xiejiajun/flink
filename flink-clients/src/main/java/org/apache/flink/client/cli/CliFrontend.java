@@ -232,6 +232,17 @@ public class CliFrontend {
 		LOG.debug("Effective executor configuration: {}", effectiveConfiguration);
 
 		try {
+			// TODO 提交作业(Flink提交作业的优秀设计思想体现在org.apache.flink.client.program.PackagedProgramUtils.getPipelineFromProgram
+			//  和org.apache.flink.client.ClientUtils.executeProgram的实现逻辑里面，这两个方法对比着看，设计非常巧妙，非常值得借鉴）
+			//  总结：Flink提交作业的方式是通过CliFrontend作为入口，然后以反射的方式运行用户mainClass来提交作业，在用户mainClass
+			//       执行前，Flink框架根据提交参数通过线程上下文变量的方式去动态设置用户自定义的Flink应用程序的mainClass中getExecutionEnvironment
+			//       获取到的执行上下文和env.execute执行的具体逻辑
+			//       和spark-submit比较，会发现SparkSubmit.scala里面也是用这种思想动态设置Spark的runMode等信息和运行用户mainClass来
+			//       提交用户实现的spark应用程序的,只不过对于spark core程序无需sparkContext的start 、execute等方法的原因是，spark对于
+			//       作业的提交是写死一个固定实现的(SparkApplication.start)
+			//  归根结底：用户自己的mainClass里面写了那么多逻辑，都只是在配置Flink/Spark框架运行是需要各种函数实现，目前这种配置是通过代码来完成的,
+			//       但原则上也是可以通过json、xml以及配置中心等方式来实现这种作业配置，所以不要想当然以为Flink/Spark是通过直接运行那段逻辑来执行计算的，
+			//       它只是通过用户代码来初始化执行配置而已
 			executeProgram(effectiveConfiguration, program);
 		} finally {
 			program.deleteExtractedLibraries();
@@ -272,7 +283,7 @@ public class CliFrontend {
 
 	/**
 	 * Executes the info action.
-	 *
+	 * TODO 查看执行计划
 	 * @param args Command line arguments for the info action.
 	 */
 	protected void info(String[] args) throws Exception {
@@ -293,6 +304,7 @@ public class CliFrontend {
 		// -------- build the packaged program -------------
 
 		LOG.info("Building program from JAR file");
+		// TODO 从用户jar构建PackagedProgram
 		final PackagedProgram program = buildProgram(programOptions);
 
 		try {
@@ -309,7 +321,7 @@ public class CliFrontend {
 			final Configuration effectiveConfiguration = getEffectiveConfiguration(
 					activeCommandLine, commandLine, programOptions, program.getJobJarAndDependencies());
 
-			// TODO 这里会运行用户的mainClass
+			// TODO 这里会运行用户的mainClass来生成执行计划(Pipeline)的
 			Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, effectiveConfiguration, parallelism, true);
 			String jsonPlan = FlinkPipelineTranslationUtil.translateToJSONExecutionPlan(pipeline);
 
@@ -701,12 +713,13 @@ public class CliFrontend {
 	// --------------------------------------------------------------------------------------------
 
 	protected void executeProgram(final Configuration configuration, final PackagedProgram program) throws ProgramInvocationException {
+		// TODO  执行用户MainClass来提交Flink业务处理逻辑到集群
 		ClientUtils.executeProgram(new DefaultExecutorServiceLoader(), configuration, program, false, false);
 	}
 
 	/**
 	 * Creates a Packaged program from the given command line options.
-	 *
+	 * TODO 根据用户配置构建用于加载用户提交的jar及其依赖的PackagedProgram
 	 * @return A PackagedProgram (upon success)
 	 */
 	PackagedProgram buildProgram(final ProgramOptions runOptions)

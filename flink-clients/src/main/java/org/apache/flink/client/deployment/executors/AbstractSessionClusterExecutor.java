@@ -63,6 +63,7 @@ public class AbstractSessionClusterExecutor<ClusterID, ClientFactory extends Clu
 			final ClusterClientProvider<ClusterID> clusterClientProvider = clusterDescriptor.retrieve(clusterID);
 			ClusterClient<ClusterID> clusterClient = clusterClientProvider.getClusterClient();
 			return clusterClient
+				    // TODO 提交到standalone集群等常驻服务的入口
 					.submitJob(jobGraph)
 					.thenApplyAsync(jobID -> (JobClient) new ClusterClientJobClientAdapter<>(
 							clusterClientProvider,

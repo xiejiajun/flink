@@ -81,6 +81,13 @@ public class EmbeddedExecutor implements PipelineExecutor {
 		this.jobClientCreator = checkNotNull(jobClientCreator);
 	}
 
+	/**
+	 * TODO 这是哪种模式的提交人口？Web?
+	 * @param pipeline      the {@link Pipeline} to execute
+	 * @param configuration the {@link Configuration} with the required execution parameters
+	 * @return
+	 * @throws MalformedURLException
+	 */
 	@Override
 	public CompletableFuture<JobClient> execute(final Pipeline pipeline, final Configuration configuration) throws MalformedURLException {
 		checkNotNull(pipeline);

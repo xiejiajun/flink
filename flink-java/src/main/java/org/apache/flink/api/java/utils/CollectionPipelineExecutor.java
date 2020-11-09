@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * TODO 批量串行提交作业？
  * An {@link PipelineExecutor} for serial, local, collection-based executions of Flink programs.
  */
 @Internal

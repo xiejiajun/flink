@@ -131,6 +131,7 @@ public enum ClientUtils {
 
 			LOG.info("Starting program (detached: {})", !configuration.getBoolean(DeploymentOptions.ATTACHED));
 
+			// TODO 设置用户mainClass中的env.execute即将调用的的execute方法实现
 			ContextEnvironment.setAsContext(
 				executorServiceLoader,
 				configuration,
@@ -138,6 +139,7 @@ public enum ClientUtils {
 				enforceSingleJobExecution,
 				suppressSysout);
 
+			// TODO 设置用户mainClass中的env.execute即将调用的的execute方法实现
 			StreamContextEnvironment.setAsContext(
 				executorServiceLoader,
 				configuration,
@@ -146,6 +148,11 @@ public enum ClientUtils {
 				suppressSysout);
 
 			try {
+				// TODO 执行用户的MainClass
+				//  mainClass中的getExecutionEnvironment获取到的执行环境由上面的StreamContextEnvironment.setAsContext
+				//  或者ContextEnvironment.setAsContext构建出来的StreamExecutionEnvironmentFactory或者ExecutionEnvironmentFactory
+				//  创建，mainClass中的env.execute方法调用的具体实现即StreamContextEnvironment/ContextEnvironment的execute方法
+				//  最终会调用executeAsync将任务提交到集群运行
 				program.invokeInteractiveModeForExecution();
 			} finally {
 				ContextEnvironment.unsetAsContext();
