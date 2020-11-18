@@ -171,6 +171,13 @@ public class YarnResourceManager extends ActiveResourceManager<YarnWorkerNode>
 
 		this.webInterfaceUrl = webInterfaceUrl;
 
+		// TODO 这里的实现对于Yarn使用FairScheduler / SLSFairScheduler调度器时有bug:
+		//  [Flink-1.11.1 Flink Job Submitted on Yarn Does not Assign Task Manager](https://stackoverflow.com/questions/63771098/flink-1-11-1-flink-job-submitted-on-yarn-does-not-assign-task-manager)
+		//  [Flink-19141: Flink Job Submitted on Yarn Does not Allocate Task Manager](https://issues.apache.org/jira/browse/FLINK-19141)
+		//  [Flink-19151: Flink does not normalize container resource with correct configurations when Yarn FairScheduler is used](https://issues.apache.org/jira/browse/FLINK-19151)
+		//    - https://github.com/apache/flink/pull/13347/files
+		//    - https://github.com/apache/flink/commit/bfff6b15ec7dd3a4415f6a5a9d8535ea7960e474
+		//    - https://github.com/apache/flink/pull/13347
 		this.workerSpecContainerResourceAdapter = new WorkerSpecContainerResourceAdapter(
 			flinkConfig,
 			yarnConfig.getInt(
