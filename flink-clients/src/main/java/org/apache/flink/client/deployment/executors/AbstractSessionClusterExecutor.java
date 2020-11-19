@@ -60,6 +60,7 @@ public class AbstractSessionClusterExecutor<ClusterID, ClientFactory extends Clu
 			final ClusterID clusterID = clusterClientFactory.getClusterId(configuration);
 			checkState(clusterID != null);
 
+			// TODO clusterDescriptor主要记录了远程已经启动的集群的连接信息（比如appId,或者standalone模式的host port信息等)
 			final ClusterClientProvider<ClusterID> clusterClientProvider = clusterDescriptor.retrieve(clusterID);
 			ClusterClient<ClusterID> clusterClient = clusterClientProvider.getClusterClient();
 			return clusterClient

@@ -67,6 +67,7 @@ public class AbstractJobClusterExecutor<ClusterID, ClientFactory extends Cluster
 
 			final ClusterSpecification clusterSpecification = clusterClientFactory.getClusterSpecification(configuration);
 
+			// TODO clusterSpecification描述了即将要启动的yarn-per-job集群等需要的一些配置信息
 			final ClusterClientProvider<ClusterID> clusterClientProvider = clusterDescriptor
 				    // TODO 部署作业到集群(适合yarn-per-job、k8s等)
 					.deployJobCluster(clusterSpecification, jobGraph, configAccessor.getDetachedMode());
