@@ -288,7 +288,7 @@ public class PackagedProgram {
 		}
 
 		try {
-			// TODO 反射调用main方法
+			// TODO 反射调用main方法 , main方法最后的execute方法会跳到具体的Env的execute方法上去，那里才是真正提交作业的地方
 			mainMethod.invoke(null, (Object) args);
 		} catch (IllegalArgumentException e) {
 			throw new ProgramInvocationException("Could not invoke the main method, arguments are not matching.", e);
