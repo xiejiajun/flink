@@ -84,6 +84,15 @@ import static org.apache.flink.client.cli.CliFrontendParser.HELP_OPTION;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
+ * TODO Flink预启动集群作业模式： CliFrontend提交 -> Standalone / yarn-session
+ *  启动并设置Flink集群连接信息到configuration -> 根据对应的CustomCommandLine(GenericCLI,FlinkYarnSessionCli等)实现的
+ *  applyCommandLineOptionsToConfiguration得到带有远程集群连接信息的Configuration，使用新的Configuration构建远程集群描述信息并构建对应的
+ *  PipelineExecutor提交作业到对应远程集群
+ * TODO 临时集群作业模式(yarn-per-job、yarn-application? 、 k8s？): CliFrontend提交 -> 定义集群配置 & PipelineExecutor.execute 启动集群并执行作业
+ *
+ * TODO Flink架构(最新的yarn-application模式除外) ： Client  <-> JobManager(运行在Yarn上，包含AM) <-> TaskManager
+ *    可以看出Flink的模式类似于Spark的yarn-client模式，用户提交任务的地方有一个Client进程可以用于和JobManager持续交互(attached模式,
+ *    detached模式类似Spark的yarn-cluster?)
  * Implementation of a simple command line frontend for executing programs.
  */
 public class CliFrontend {
