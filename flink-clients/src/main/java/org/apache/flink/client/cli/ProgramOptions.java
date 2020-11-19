@@ -172,6 +172,7 @@ public class ProgramOptions extends CommandLineOptions {
 
 		configuration.setBoolean(DeploymentOptions.ATTACHED, !getDetachedMode());
 		configuration.setBoolean(DeploymentOptions.SHUTDOWN_IF_ATTACHED, isShutdownOnAttachedExit());
+		// TODO 将--classpath或者-C设置的classpath设置给JobManager
 		ConfigUtils.encodeCollectionToConfig(configuration, PipelineOptions.CLASSPATHS, getClasspaths(), URL::toString);
 		SavepointRestoreSettings.toConfiguration(getSavepointRestoreSettings(), configuration);
 	}

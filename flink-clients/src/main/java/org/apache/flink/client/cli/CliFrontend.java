@@ -226,6 +226,7 @@ public class CliFrontend {
 
 		// TODO 获取Flink APP fat jar中依赖
 		final List<URL> jobJars = program.getJobJarAndDependencies();
+		// TODO 这里会将--classpath或者-C设置的classpath设置给JobManager
 		final Configuration effectiveConfiguration = getEffectiveConfiguration(
 				activeCommandLine, commandLine, programOptions, jobJars);
 
@@ -267,6 +268,7 @@ public class CliFrontend {
 			final ProgramOptions programOptions,
 			final List<T> jobJars) throws FlinkException {
 
+		// TODO 这里会将--classpath或者-C设置的classpath设置给JobManager
 		final ExecutionConfigAccessor executionParameters = ExecutionConfigAccessor.fromProgramOptions(
 				checkNotNull(programOptions),
 				checkNotNull(jobJars));
@@ -736,6 +738,7 @@ public class CliFrontend {
 
 		return PackagedProgram.newBuilder()
 			.setJarFile(jarFile)
+			// TODO 这里将-C 或者--classpath设置的classpath设置到用户classpath列表
 			.setUserClassPaths(classpaths)
 			.setEntryPointClassName(entryPointClass)
 			.setConfiguration(configuration)

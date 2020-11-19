@@ -60,6 +60,7 @@ public class ExecutionConfigAccessor {
 
 		final Configuration configuration = new Configuration();
 
+		// TODO 将--classpath或者-C设置的classpath设置给JobManager
 		options.applyToConfiguration(configuration);
 		// TODO 将依赖信息保存到configuration
 		ConfigUtils.encodeCollectionToConfig(configuration, PipelineOptions.JARS, jobJars, Object::toString);

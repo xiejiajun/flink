@@ -339,6 +339,7 @@ public class ExecutionContext<ClusterID> {
 
 		try {
 			final ProgramOptions programOptions = ProgramOptions.create(commandLine);
+			// TODO 这里会将--classpath或者-C设置的classpath设置给JobManager
 			final ExecutionConfigAccessor executionConfigAccessor = ExecutionConfigAccessor.fromProgramOptions(programOptions, dependencies);
 			executionConfigAccessor.applyToConfiguration(executionConfig);
 		} catch (CliArgsException e) {
