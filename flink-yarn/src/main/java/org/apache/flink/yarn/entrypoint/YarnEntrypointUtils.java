@@ -52,6 +52,7 @@ import static org.apache.flink.util.Preconditions.checkState;
 public class YarnEntrypointUtils {
 
 	public static Configuration loadConfiguration(String workingDirectory, Map<String, String> env) {
+		// TODO 加载flink-conf.yaml中的配置
 		Configuration configuration = GlobalConfiguration.loadConfiguration(workingDirectory);
 
 		final String keytabPrincipal = env.get(YarnConfigKeys.KEYTAB_PRINCIPAL);

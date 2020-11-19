@@ -83,6 +83,7 @@ final class FlinkDistribution {
 		log = distributionDir.resolve("log");
 		plugins = distributionDir.resolve("plugins");
 
+		// TODO 加载flink-conf.yaml中的配置
 		defaultConfig = new UnmodifiableConfiguration(GlobalConfiguration.loadConfiguration(conf.toAbsolutePath().toString()));
 	}
 

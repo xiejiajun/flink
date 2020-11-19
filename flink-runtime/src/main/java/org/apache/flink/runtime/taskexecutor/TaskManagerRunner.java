@@ -299,6 +299,7 @@ public class TaskManagerRunner implements FatalErrorHandler, AutoCloseableAsync 
 	}
 
 	public static Configuration loadConfiguration(String[] args) throws FlinkParseException {
+		// TODO 加载flink-conf.yaml中的配置
 		return ConfigurationParserUtils.loadCommonConfiguration(args, TaskManagerRunner.class.getSimpleName());
 	}
 

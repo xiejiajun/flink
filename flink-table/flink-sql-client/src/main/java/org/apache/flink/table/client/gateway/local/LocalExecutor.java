@@ -125,6 +125,7 @@ public class LocalExecutor implements Executor {
 			flinkConfigDir = CliFrontend.getConfigurationDirectoryFromEnv();
 
 			// load the global configuration
+			// TODO 加载flink-conf.yml配置
 			this.flinkConfig = GlobalConfiguration.loadConfiguration(flinkConfigDir);
 
 			// initialize default file system

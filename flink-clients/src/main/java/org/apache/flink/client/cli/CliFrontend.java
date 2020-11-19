@@ -998,10 +998,11 @@ public class CliFrontend {
 		// 1. find the configuration directory
 		final String configurationDirectory = getConfigurationDirectoryFromEnv();
 
+		// TODO  加载配置文件flink-conf.yaml中的全局配置
 		// 2. load the global configuration
 		final Configuration configuration = GlobalConfiguration.loadConfiguration(configurationDirectory);
 
-		// 3. load the custom command lines
+		// 3. load the custom command lines (TODO 待研究是干嘛的)
 		final List<CustomCommandLine> customCommandLines = loadCustomCommandLines(
 			configuration,
 			configurationDirectory);

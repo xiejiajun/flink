@@ -111,6 +111,7 @@ public class HistoryServer {
 		String configDir = pt.getRequired("configDir");
 
 		LOG.info("Loading configuration from {}", configDir);
+		// TODO 加载flink-conf.yaml中的配置
 		final Configuration flinkConfig = GlobalConfiguration.loadConfiguration(configDir);
 
 		FileSystem.initialize(flinkConfig, PluginUtils.createPluginManagerFromRootFolder(flinkConfig));

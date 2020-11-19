@@ -49,6 +49,7 @@ class KubernetesEntrypointUtils {
 			"Flink configuration directory (%s) in environment should not be null!",
 			ConfigConstants.ENV_FLINK_CONF_DIR);
 
+		// TODO 加载flink-conf.yaml中的配置
 		final Configuration configuration = GlobalConfiguration.loadConfiguration(configDir);
 
 		if (HighAvailabilityMode.isHighAvailabilityModeActivated(configuration)) {

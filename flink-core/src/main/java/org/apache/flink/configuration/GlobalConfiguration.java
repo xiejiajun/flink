@@ -115,6 +115,7 @@ public final class GlobalConfiguration {
 					"' (" + confDirFile.getAbsolutePath() + ") does not describe an existing directory.");
 		}
 
+		// TODO 获取yml文件
 		// get Flink yaml configuration file
 		final File yamlConfigFile = new File(confDirFile, FLINK_CONF_FILENAME);
 
@@ -124,6 +125,7 @@ public final class GlobalConfiguration {
 					"' (" + confDirFile.getAbsolutePath() + ") does not exist.");
 		}
 
+		// TODO 加载yml文件
 		Configuration configuration = loadYAMLResource(yamlConfigFile);
 
 		if (dynamicProperties != null) {

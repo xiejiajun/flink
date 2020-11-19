@@ -497,6 +497,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
 
 	protected static Configuration loadConfiguration(EntrypointClusterConfiguration entrypointClusterConfiguration) {
 		final Configuration dynamicProperties = ConfigurationUtils.createConfiguration(entrypointClusterConfiguration.getDynamicProperties());
+		// TODO 加载配置文件
 		final Configuration configuration = GlobalConfiguration.loadConfiguration(entrypointClusterConfiguration.getConfigDir(), dynamicProperties);
 
 		final int restPort = entrypointClusterConfiguration.getRestPort();

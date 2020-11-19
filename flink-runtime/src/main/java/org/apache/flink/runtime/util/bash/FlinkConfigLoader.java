@@ -38,6 +38,12 @@ public class FlinkConfigLoader {
 
 	private static final Options CMD_OPTIONS = ClusterConfigurationParserFactory.options();
 
+	/**
+	 * TODO 加载配置文件
+	 * @param args
+	 * @return
+	 * @throws FlinkException
+	 */
 	public static Configuration loadConfiguration(String[] args) throws FlinkException {
 		return ConfigurationParserUtils.loadCommonConfiguration(
 			filterCmdArgs(args),

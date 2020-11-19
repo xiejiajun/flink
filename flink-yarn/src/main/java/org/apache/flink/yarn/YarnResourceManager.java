@@ -275,6 +275,7 @@ public class YarnResourceManager extends ActiveResourceManager<YarnWorkerNode>
 
 	@Override
 	protected Configuration loadClientConfiguration() {
+		// TODO 加载Flink配置文件flink-conf.yaml里面的配置
 		return GlobalConfiguration.loadConfiguration(env.get(ApplicationConstants.Environment.PWD.key()));
 	}
 

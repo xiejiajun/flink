@@ -736,6 +736,7 @@ public class FlinkYarnSessionCli extends AbstractCustomCommandLine {
 	public static void main(final String[] args) {
 		final String configurationDirectory = CliFrontend.getConfigurationDirectoryFromEnv();
 
+		// TODO 加载flink配置文件
 		final Configuration flinkConfiguration = GlobalConfiguration.loadConfiguration();
 
 		int retCode;

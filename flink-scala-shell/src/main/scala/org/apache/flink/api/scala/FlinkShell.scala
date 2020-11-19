@@ -146,6 +146,7 @@ object FlinkShell {
   private def getGlobalConfig(config: Config) = {
     val confDirPath = getConfigDir(config)
     val configDirectory = new File(confDirPath)
+    // TODO 加载并返回flink-conf.yaml中的配置
     GlobalConfiguration.loadConfiguration(configDirectory.getAbsolutePath)
   }
 

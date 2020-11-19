@@ -128,6 +128,7 @@ public class ConfigurationParserUtils {
 		}
 
 		final Configuration dynamicProperties = ConfigurationUtils.createConfiguration(clusterConfiguration.getDynamicProperties());
+		// TODO flink confDir/flink-conf.yml文件读取
 		return GlobalConfiguration.loadConfiguration(clusterConfiguration.getConfigDir(), dynamicProperties);
 	}
 }
