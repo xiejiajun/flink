@@ -65,6 +65,7 @@ class FlinkILoop(
     ScalaShellEnvironment.resetContextEnvironments()
     ScalaShellStreamEnvironment.resetContextEnvironments()
 
+    // TODO flinkConfig在构建FlinkILoop前必须保证里面包含了运行模式及其远端JM的连接信息(如Yarn appId或者standalone模式的host&port)
     // create our environment that submits against the cluster (local or remote)
     val remoteBenv = new ScalaShellEnvironment(
       flinkConfig,
