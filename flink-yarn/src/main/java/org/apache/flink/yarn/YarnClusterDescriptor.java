@@ -914,6 +914,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		// Setup CLASSPATH and environment variables for ApplicationMaster
 		final Map<String, String> appMasterEnv = new HashMap<>();
 		// set user specified app master environment variables
+		// TODO 设置用户通过containerized.master.env.前缀配置的AM环境变量
 		appMasterEnv.putAll(
 			BootstrapTools.getEnvironmentVariables(ResourceManagerOptions.CONTAINERIZED_MASTER_ENV_PREFIX, configuration));
 		// set Flink app class path
@@ -947,7 +948,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		// set classpath from YARN configuration
-		// TODO 设置yarn启动容器时的classpath
+		// TODO 添加yarn启动容器时的classpath到appMasterEnv(这里设置的classpath决定里容器内JobManager能不能正常加载需要的class)
 		Utils.setupYarnClassPath(yarnConfiguration, appMasterEnv);
 
 		// TODO 设置yarn启动容器时的环境变量

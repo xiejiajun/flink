@@ -57,6 +57,12 @@ public class AbstractJobClusterExecutor<ClusterID, ClientFactory extends Cluster
 		this.clusterClientFactory = checkNotNull(clusterClientFactory);
 	}
 
+	/**
+	 * TODO yarn-per-job启动AM的入口.
+	 * @param pipeline      the {@link Pipeline} to execute
+	 * @param configuration the {@link Configuration} with the required execution parameters
+	 * @return
+	 */
 	@Override
 	public CompletableFuture<JobClient> execute(@Nonnull final Pipeline pipeline, @Nonnull final Configuration configuration) throws Exception {
 		final JobGraph jobGraph = ExecutorUtils.getJobGraph(pipeline, configuration);
@@ -66,6 +72,7 @@ public class AbstractJobClusterExecutor<ClusterID, ClientFactory extends Cluster
 
 			final ClusterSpecification clusterSpecification = clusterClientFactory.getClusterSpecification(configuration);
 
+			// TODO 启动AM(如果是yarn-per-job模式的话)
 			final ClusterClientProvider<ClusterID> clusterClientProvider = clusterDescriptor
 					.deployJobCluster(clusterSpecification, jobGraph, configAccessor.getDetachedMode());
 			LOG.info("Job has been submitted with JobID " + jobGraph.getJobID());

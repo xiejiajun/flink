@@ -87,10 +87,18 @@ public final class Utils {
 	public static final int REMOTE_RESOURCES_FETCH_WAIT_IN_MILLI = 100;
 
 	public static void setupYarnClassPath(Configuration conf, Map<String, String> appMasterEnv) {
+		// TODO 首先将appMasterEnv中key为_FLINK_CLASSPATH的配置追加到key为CLASSPATH的条目, 降低依赖冲突风险（因为前面的优先加载)
 		addToEnvironment(
 			appMasterEnv,
 			Environment.CLASSPATH.name(),
 			appMasterEnv.get(ENV_FLINK_CLASSPATH));
+		// TODO 从Hadoop的Configuration中获取yarn.application.classpath追加到appMasterEnv中key为CLASSPATH的
+		//  条目，没有设置就获取默认的YarnConfiguration.DEFAULT_YARN_APPLICATION_CLASSPATH来追加
+		//  所以部署Flink Client时如果不想用-C或者将hadoop相关依赖软连接到$FLINK_HOME/lib下的话，需要在
+		//  $YARN_CONF_DIR/yarn-site.xml中配置yarn.application.classpath和提交的目标集群一致，保证容器启动后能在
+		//  目标集群的Node本地加载需要的class, 当然，从YarnClusterDescriptor.startAppMaster源码appMasterEnv.putAll那一行可知
+		//  在flink-conf.yaml中通过containerized.master.env.CLASSPATH : <集群上的yarn.application.classpath的配置信息>也是可以的
+		//  要注意: 配置containerized.master.env.CLASSPATH用冒号分隔且不能换行，配置yarn.application.classpath用逗号
 		String[] applicationClassPathEntries = conf.getStrings(
 			YarnConfiguration.YARN_APPLICATION_CLASSPATH,
 			YarnConfiguration.DEFAULT_YARN_APPLICATION_CLASSPATH);
