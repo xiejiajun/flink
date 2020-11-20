@@ -638,9 +638,11 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			systemShipFiles.add(new File(logConfigFilePath));
 		}
 
+		// TODO 将$FLINK_HOME/lib目录下的jar包添加到上传文件列表
 		addLibFoldersToShipFiles(systemShipFiles);
 
 		// Plugin files only need to be shipped and should not be added to classpath.
+		// TODO 插件添加到上传列表
 		addPluginsFoldersToShipFiles(shipOnlyFiles);
 
 		// Set-up ApplicationSubmissionContext for the application
@@ -745,6 +747,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Collections.sort(userClassPaths);
 
 		// classpath assembler
+		// TODO 用于拼接JM的classpath
 		StringBuilder classPathBuilder = new StringBuilder();
 		if (userJarInclusion == YarnConfigOptions.UserJarInclusion.FIRST) {
 			for (String userClassPath : userClassPaths) {
@@ -914,9 +917,11 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		appMasterEnv.putAll(
 			BootstrapTools.getEnvironmentVariables(ResourceManagerOptions.CONTAINERIZED_MASTER_ENV_PREFIX, configuration));
 		// set Flink app class path
+		// TODO 设置JobManager的classpath
 		appMasterEnv.put(YarnConfigKeys.ENV_FLINK_CLASSPATH, classPathBuilder.toString());
 
 		// set Flink on YARN internal configuration values
+		// TODO JM环境变量配置
 		appMasterEnv.put(YarnConfigKeys.FLINK_JAR_PATH, remotePathJar.toString());
 		appMasterEnv.put(YarnConfigKeys.ENV_APP_ID, appId.toString());
 		appMasterEnv.put(YarnConfigKeys.ENV_CLIENT_HOME_DIR, homeDir.toString());
@@ -942,8 +947,10 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		// set classpath from YARN configuration
+		// TODO 设置yarn启动容器时的classpath
 		Utils.setupYarnClassPath(yarnConfiguration, appMasterEnv);
 
+		// TODO 设置yarn启动容器时的环境变量
 		amContainer.setEnvironment(appMasterEnv);
 
 		// Set up resource type requirements for ApplicationMaster
@@ -977,6 +984,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Thread deploymentFailureHook = new DeploymentFailureHook(yarnApplication, yarnFilesDir);
 		Runtime.getRuntime().addShutdownHook(deploymentFailureHook);
 		LOG.info("Submitting application master " + appId);
+		// TODO 提交AM容器
 		yarnClient.submitApplication(appContext);
 
 		LOG.info("Waiting for the cluster to be allocated");
@@ -984,6 +992,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		ApplicationReport report;
 		YarnApplicationState lastAppState = YarnApplicationState.NEW;
 		loop: while (true) {
+			// TODO 循环等待容器启动或失败
 			try {
 				report = yarnClient.getApplicationReport(appId);
 			} catch (IOException e) {
