@@ -809,7 +809,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			try {
 				tmpJobGraphFile = File.createTempFile(appId.toString(), null);
 				try (FileOutputStream output = new FileOutputStream(tmpJobGraphFile);
-					 ObjectOutputStream obOutput = new ObjectOutputStream(output);){
+					ObjectOutputStream obOutput = new ObjectOutputStream(output);){
 					obOutput.writeObject(jobGraph);
 				}
 
