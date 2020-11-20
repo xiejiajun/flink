@@ -75,6 +75,8 @@ public class ExecutorCLI implements CustomCommandLine {
 
 	@Override
 	public boolean isActive(CommandLine commandLine) {
+		// TODO 当明确指定execution.target(yaml中) 如execution.target: local
+		//  或者-e指定executor名称时激活
 		return baseConfiguration.getOptional(DeploymentOptions.TARGET).isPresent()
 				|| commandLine.hasOption(executorOption.getOpt());
 	}

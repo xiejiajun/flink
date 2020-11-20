@@ -36,6 +36,7 @@ public class DefaultCLI extends AbstractCustomCommandLine {
 
 	@Override
 	public boolean isActive(CommandLine commandLine) {
+		// TODO 默认被激活
 		// always active because we can try to read a JobManager address from the config
 		return true;
 	}

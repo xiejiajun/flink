@@ -298,8 +298,10 @@ public class FlinkYarnSessionCli extends AbstractCustomCommandLine {
 
 	@Override
 	public boolean isActive(CommandLine commandLine) {
+		// TODO JobManager地址
 		final String jobManagerOption = commandLine.getOptionValue(addressOption.getOpt(), null);
 		final boolean yarnJobManager = ID.equals(jobManagerOption);
+		// TODO 判断是否传递了appId
 		final boolean hasYarnAppId = commandLine.hasOption(applicationId.getOpt())
 				|| configuration.getOptional(YarnConfigOptions.APPLICATION_ID).isPresent();
 		final boolean hasYarnExecutor = YarnSessionClusterExecutor.NAME.equals(configuration.get(DeploymentOptions.TARGET))
