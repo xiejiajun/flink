@@ -32,6 +32,9 @@ import scala.collection.mutable.ArrayBuffer
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter._
 
+/**
+ * TODO start-scala-shell.sh入口
+ */
 object FlinkShell {
 
   object ExecutionMode extends Enumeration {
