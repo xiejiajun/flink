@@ -135,6 +135,7 @@ public enum ClientUtils {
 			ContextEnvironment.setAsContext(factory);
 
 			try {
+				// TODO 这里名调用env.execute方法后又跳转到Flink Framework
 				program.invokeInteractiveModeForExecution();
 			} finally {
 				ContextEnvironment.unsetContext();
