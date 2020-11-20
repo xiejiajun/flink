@@ -993,7 +993,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		// set classpath from YARN configuration
-		// TODO 设置yarn启动容器时传递的classpath
+		// TODO 配置yarn启动容器时传递的classpath(主要设置JobManager容器能在NodeManager本地加载的class)
 		Utils.setupYarnClassPath(yarnConfiguration, appMasterEnv);
 
 		// TODO appMasterEnv设置到容器，容器中的应用就可以方便获取到classpath信息了
