@@ -105,6 +105,7 @@ class YarnApplicationFileUploader implements AutoCloseable {
 
 		this.localResources = new HashMap<>();
 		this.applicationDir = getApplicationDir(applicationId);
+		// TODO 读取分布式文件系统上的Flink系统包路径
 		this.providedSharedLibs = getAllFilesInProvidedLibDirs(providedLibDirs);
 
 		this.remotePaths = new ArrayList<>();

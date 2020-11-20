@@ -678,6 +678,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 
 		ApplicationSubmissionContext appContext = yarnApplication.getApplicationSubmissionContext();
 
+		// TODO 假设用户配置了yarn.provided.lib.dirs（flink 1.11.x才有), 则优先从远程文件系统读取Flink系统依赖
 		final List<Path> providedLibDirs = getRemoteSharedPaths(configuration);
 
 		final YarnApplicationFileUploader fileUploader = YarnApplicationFileUploader.from(
@@ -685,15 +686,17 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			fs.getHomeDirectory(),
 			providedLibDirs,
 			appContext.getApplicationId(),
+			// TODO 文件副本数配置
 			getFileReplication());
 
 		// The files need to be shipped and added to classpath.
-		// TODO 需要共享的依赖 & 配置文件
+		// TODO 需要共享的依赖 & 配置文件(-C参数指定)
 		Set<File> systemShipFiles = new HashSet<>(shipFiles.size());
 		for (File file : shipFiles) {
 			systemShipFiles.add(file.getAbsoluteFile());
 		}
 
+		// TODO 日志配置文件
 		final String logConfigFilePath = configuration.getString(YarnConfigOptionsInternal.APPLICATION_LOG_CONFIG_FILE);
 		if (logConfigFilePath != null) {
 			systemShipFiles.add(new File(logConfigFilePath));
@@ -732,17 +735,19 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 
 		final Set<Path> userJarFiles = new HashSet<>();
 		if (jobGraph != null) {
-			// TODO 用于依赖包
+			// TODO 用于依赖包(用户应用jar包中Java文件列表)
 			userJarFiles.addAll(jobGraph.getUserJars().stream().map(f -> f.toUri()).map(Path::new).collect(Collectors.toSet()));
 		}
 
 		final List<URI> jarUrls = ConfigUtils.decodeListFromConfig(configuration, PipelineOptions.JARS, URI::create);
 		if (jarUrls != null && YarnApplicationClusterEntryPoint.class.getName().equals(yarnClusterEntrypoint)) {
+			// TODO yarn-application模式提交的jar列表
 			userJarFiles.addAll(jarUrls.stream().map(Path::new).collect(Collectors.toSet()));
 		}
 
 		// only for per job mode
 		if (jobGraph != null) {
+			// TODO 只有yarn-per-job模式在提交前构建出jobGraph
 			for (Map.Entry<String, DistributedCache.DistributedCacheEntry> entry : jobGraph.getUserArtifacts().entrySet()) {
 				// only upload local files
 				if (!Utils.isRemotePath(entry.getValue().filePath)) {
@@ -757,13 +762,14 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		if (providedLibDirs == null || providedLibDirs.isEmpty()) {
+			// TODO 将$FLINK_HOME/lib下的jar添加到上传文件列表
 			addLibFoldersToShipFiles(systemShipFiles);
 		}
 
 		// Register all files in provided lib dirs as local resources with public visibility
 		// and upload the remaining dependencies as local resources with APPLICATION visibility.
 		final List<String> systemClassPaths = fileUploader.registerProvidedLocalResources();
-		// TODO 上传系统依赖并注册成资源方便集群使用
+		// TODO 上传系统依赖并注册成资源方便集群使用(-C指定那部分)
 		final List<String> uploadedDependencies = fileUploader.registerMultipleLocalResources(
 			systemShipFiles.stream().map(e -> new Path(e.toURI())).collect(Collectors.toSet()),
 			Path.CUR_DIR);
@@ -773,6 +779,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		// Plugin files only need to be shipped and should not be added to classpath.
 		if (providedLibDirs == null || providedLibDirs.isEmpty()) {
 			Set<File> shipOnlyFiles = new HashSet<>();
+			// TODO 插件上传
 			addPluginsFoldersToShipFiles(shipOnlyFiles);
 			fileUploader.registerMultipleLocalResources(
 					shipOnlyFiles.stream().map(e -> new Path(e.toURI())).collect(Collectors.toSet()),
@@ -795,6 +802,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		Collections.sort(userClassPaths);
 
 		// classpath assembler
+		// TODO 组装JobManager的classpath
 		StringBuilder classPathBuilder = new StringBuilder();
 		if (userJarInclusion == YarnConfigOptions.UserJarInclusion.FIRST) {
 			for (String userClassPath : userClassPaths) {
@@ -829,6 +837,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 					"",
 					true,
 					false);
+				// TODO jobGraph配置文件添加到classpath
 				classPathBuilder.append(jobGraphFilename).append(File.pathSeparator);
 			} catch (Exception e) {
 				LOG.warn("Add job graph to local resource fail.");
@@ -848,12 +857,14 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			BootstrapTools.writeConfiguration(configuration, tmpConfigurationFile);
 
 			String flinkConfigKey = "flink-conf.yaml";
+			// TODO 上传flink-conf.yaml
 			fileUploader.registerSingleLocalResource(
 				flinkConfigKey,
 				new Path(tmpConfigurationFile.getAbsolutePath()),
 				"",
 				true,
 				true);
+			// TODO 添加flink-conf.yaml到classpath
 			classPathBuilder.append("flink-conf.yaml").append(File.pathSeparator);
 		} finally {
 			if (tmpConfigurationFile != null && !tmpConfigurationFile.delete()) {
@@ -939,9 +950,11 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 			Utils.setTokensFor(amContainer, fileUploader.getRemotePaths(), yarnConfiguration);
 		}
 
+		// TODO 设置AM容器的可以资源（jar、配置文件)
 		amContainer.setLocalResources(fileUploader.getRegisteredLocalResources());
 		fileUploader.close();
 
+		// TODO 用于保存AM的环境变量和classpath
 		// Setup CLASSPATH and environment variables for ApplicationMaster
 		final Map<String, String> appMasterEnv = new HashMap<>();
 		// set user specified app master environment variables
@@ -980,6 +993,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		}
 
 		// set classpath from YARN configuration
+		// TODO 设置yarn启动容器时传递的classpath
 		Utils.setupYarnClassPath(yarnConfiguration, appMasterEnv);
 
 		// TODO appMasterEnv设置到容器，容器中的应用就可以方便获取到classpath信息了
@@ -1024,6 +1038,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 		ApplicationReport report;
 		YarnApplicationState lastAppState = YarnApplicationState.NEW;
 		loop: while (true) {
+			// TODO 循环等待容器启动成功或者失败
 			try {
 				report = yarnClient.getApplicationReport(appId);
 			} catch (IOException e) {
@@ -1065,12 +1080,14 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
 	}
 
 	private int getFileReplication() {
+		// TODO 副本数设置
 		final int yarnFileReplication = yarnConfiguration.getInt(DFSConfigKeys.DFS_REPLICATION_KEY, DFSConfigKeys.DFS_REPLICATION_DEFAULT);
 		final int fileReplication = flinkConfiguration.getInteger(YarnConfigOptions.FILE_REPLICATION);
 		return fileReplication > 0 ? fileReplication : yarnFileReplication;
 	}
 
 	private List<Path> getRemoteSharedPaths(Configuration configuration) throws IOException, FlinkException {
+		// TODO yarn.provided.lib.dirs: Flink 1.11.x提供的一个远程Flink系统依赖配置项
 		final List<Path> providedLibDirs = ConfigUtils.decodeListFromConfig(
 			configuration, YarnConfigOptions.PROVIDED_LIB_DIRS, Path::new);
 

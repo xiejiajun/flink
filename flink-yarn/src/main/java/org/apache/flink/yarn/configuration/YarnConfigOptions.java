@@ -261,6 +261,10 @@ public class YarnConfigOptions {
 									"resource directory. If set to false, Flink" +
 									" will try to directly locate the keytab from the path itself.");
 
+
+	/**
+	 * TODO Flink 1.11.x提供的一个远程Flink系统依赖配置项
+	 */
 	public static final ConfigOption<List<String>> PROVIDED_LIB_DIRS =
 		key("yarn.provided.lib.dirs")
 			.stringType()
